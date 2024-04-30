@@ -1,0 +1,49 @@
+{
+  "project_info": {
+    "project_number": "839298161570",
+    "firebase_url": "https://virtual-gallery-chicago-default-rtdb.firebaseio.com",
+    "project_id": "virtual-gallery-chicago",
+    "storage_bucket": "virtual-gallery-chicago.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:839298161570:android:b82bf225440e4d883d70fb",
+        "android_client_info": {
+          "package_name": "com.example.gallerychicago"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCXhdQI0n6Y52P-jpxjY6kD4faG4vbWEko"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:839298161570:android:5aeae51b8d8812213d70fb",
+        "android_client_info": {
+          "package_name": "com.example.test"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCXhdQI0n6Y52P-jpxjY6kD4faG4vbWEko"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
