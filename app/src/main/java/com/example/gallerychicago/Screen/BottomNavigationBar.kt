@@ -1,4 +1,4 @@
-package com.example.gallerychicago
+package com.example.gallerychicago.Screen
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.BottomNavigation
@@ -16,10 +16,11 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.compose.material3.MaterialTheme
+import com.example.gallerychicago.Data.ArtworkViewModel
 
 
 @Composable
-fun BottomNavigationBar() {
+fun BottomNavigationBar(viewModel: ArtworkViewModel) {
     val navController = rememberNavController()
     Scaffold(
         bottomBar = {
@@ -61,7 +62,7 @@ fun BottomNavigationBar() {
                 Home(navController)
             }
             composable(Routes.Exhibition.value) {
-                Exhibition(navController)
+                Exhibition(navController, viewModel)
             }
         }
     }

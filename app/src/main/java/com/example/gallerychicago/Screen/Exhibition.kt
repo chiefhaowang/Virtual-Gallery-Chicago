@@ -1,4 +1,4 @@
-package com.example.gallerychicago
+package com.example.gallerychicago.Screen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -39,10 +39,18 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import androidx.compose.runtime.livedata.observeAsState
+import com.example.gallerychicago.Data.Artwork
+import com.example.gallerychicago.Data.ArtworkViewModel
+import com.example.gallerychicago.R
 
 
 @Composable
-fun Exhibition(navController: NavHostController) {
+fun Exhibition(navController: NavHostController, viewModel: ArtworkViewModel) {
+    val artworks by viewModel.allSubjects.observeAsState()
+    val selectedSubject = remember { mutableStateOf<Artwork?>(null) }
+    val insertDialog = remember { mutableStateOf(false) }
+
     Surface(color = MaterialTheme.colorScheme.surface) {
         Column(
             modifier = Modifier.fillMaxWidth()

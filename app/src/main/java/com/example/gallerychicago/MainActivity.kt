@@ -11,18 +11,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.gallerychicago.fireBaseConfig.Connection
 import com.example.gallerychicago.ui.theme.GalleryChicagoTheme
+import androidx.activity.viewModels
+import com.example.gallerychicago.Data.ArtworkViewModel
+import com.example.gallerychicago.Data.ArtworkViewModelFactory
+import com.example.gallerychicago.Screen.BottomNavigationBar
 
 class MainActivity : ComponentActivity() {
+    private val viewModel: ArtworkViewModel by viewModels { ArtworkViewModelFactory(application) }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             GalleryChicagoTheme {
-                // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    BottomNavigationBar()
+                    BottomNavigationBar(viewModel = viewModel)
                 }
             }
         }
