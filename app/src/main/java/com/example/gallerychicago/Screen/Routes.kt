@@ -1,4 +1,4 @@
-package com.example.gallerychicago
+package com.example.gallerychicago.Screen
 
 enum class Routes(val value: String) {
     Home("Home"),

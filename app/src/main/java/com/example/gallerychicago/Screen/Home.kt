@@ -1,4 +1,4 @@
-package com.example.gallerychicago
+package com.example.gallerychicago.Screen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -18,6 +18,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.example.gallerychicago.R
 
 @Composable
 fun Home(navController: NavHostController){
