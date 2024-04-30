@@ -2,7 +2,6 @@ package com.example.gallerychicago
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -19,12 +18,12 @@ object NavBarConfig {
     @Composable
     fun getNavBarItems(): List<NavBarItem> {
         val homeIcon: ImageVector = Icons.Filled.Home
-        val searchIcon: ImageVector = Icons.Filled.Search
         val accountIcon: ImageVector = Icons.Filled.AccountCircle
-        // using vectorResource to convert the icon to imageVector
+
+        // using vectorResource to convert the xml format icon to imageVector
         val reportIcon: ImageVector = ImageVector.vectorResource(id = R.drawable.svg_report)
-        
-        
+        val artworkIcon: ImageVector = ImageVector.vectorResource(id = R.drawable.svg_gallery)
+
         return listOf(
             NavBarItem(
                 label = "Home",
@@ -33,7 +32,7 @@ object NavBarConfig {
             ),
             NavBarItem(
                 label = "Artwork",
-                icon = searchIcon,
+                icon = artworkIcon,
                 route = Routes.Exhibition.value
             ),
             NavBarItem(
