@@ -28,7 +28,7 @@ fun BottomNavigationBar(viewModel: ArtworkViewModel) {
                 val navBackStackEntry by
                 navController.currentBackStackEntryAsState()
                 val currentDestination = navBackStackEntry?.destination
-                NavBarItem().NavBarItems().forEach { navItem ->
+                NavBarConfig.getNavBarItems().forEach { navItem ->
                     BottomNavigationItem(
                         icon = { Icon(navItem.icon, contentDescription =
                         null) },
@@ -63,6 +63,14 @@ fun BottomNavigationBar(viewModel: ArtworkViewModel) {
             }
             composable(Routes.Exhibition.value) {
                 Exhibition(navController, viewModel)
+            }
+            composable(Routes.ReportScreen.value)
+            {
+                ReportScreen(navController)
+            }
+            composable(Routes.UserProfile.value)
+            {
+                UserProfile(navController)
             }
         }
     }
