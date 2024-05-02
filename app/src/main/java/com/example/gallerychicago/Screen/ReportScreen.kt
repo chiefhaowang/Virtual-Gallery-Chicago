@@ -1,4 +1,4 @@
-package com.example.gallerychicago
+package com.example.gallerychicago.Screen
 
 import android.graphics.Paint
 import androidx.compose.foundation.Canvas
@@ -31,6 +31,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.gallerychicago.R
 import kotlin.math.cos
 import kotlin.math.sin
 
