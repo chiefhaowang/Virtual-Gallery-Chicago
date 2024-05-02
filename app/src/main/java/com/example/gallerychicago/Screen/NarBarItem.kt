@@ -21,7 +21,7 @@ object NavBarConfig {
         val homeIcon: ImageVector = Icons.Filled.Home
         val accountIcon: ImageVector = Icons.Filled.AccountCircle
         // using vectorResource to convert the icon to imageVector
-        var iconArtwork: ImageVector = ImageVector.vectorResource(id = R.drawable.icon_gallery)
+        var artworkIcon: ImageVector = ImageVector.vectorResource(id = R.drawable.svg_gallery)
         val reportIcon: ImageVector = ImageVector.vectorResource(id = R.drawable.svg_report)
 
         return listOf(
@@ -32,7 +32,7 @@ object NavBarConfig {
             ),
             NavBarItem(
                 label = "Artwork",
-                icon = iconArtwork,
+                icon = artworkIcon,
                 route = Routes.Exhibition.value
             ),
             NavBarItem(
