@@ -13,6 +13,7 @@ import com.example.gallerychicago.ui.theme.GalleryChicagoTheme
 import androidx.activity.viewModels
 import com.example.gallerychicago.Data.ArtworkViewModel
 import com.example.gallerychicago.Screen.BottomNavigationBar
+import com.example.gallerychicago.firebaseInterface.CloudInterface
 
 class MainActivity : ComponentActivity() {
     private val viewModel: ArtworkViewModel by viewModels()
@@ -30,6 +31,12 @@ class MainActivity : ComponentActivity() {
         }
 
         // Google firebase database interface test area ()
+//        val firebaseConnection = CloudInterface()
+//        firebaseConnection.initializaDbRef()
+//        //firebaseConnection.initializeUser("whtenghe@gmailcom")
+//        firebaseConnection.readUserInfo("whtenghe@gmailcom"){
+//            println(it)
+//        }
 
     }
 }
