@@ -22,7 +22,6 @@ class CloudInterface {
     // Comment to Garfield: function for user registration
     // Use case: Every user registration will call this function
     // Functionality: Simply build a new user row with email
-    // userId: unique index for each user
     fun initializeUser( email: String ){
         val favouriteArtworks: List<FavouriteArtwork> = listOf()
         val likedArtworks: List<LikedArtwork> = listOf()
@@ -57,6 +56,7 @@ class CloudInterface {
             }
     }
 
+    // Comment to Cenglong: use this to write user data(generate test data manually)
     fun writeUserInfo(email: String, user: User){
         database.child("users").child(email).setValue(user)
             .addOnSuccessListener {
@@ -67,6 +67,7 @@ class CloudInterface {
             }
     }
 
+    // Comment to Chenglong: Use this to read user data to get user likes and favourite list
     fun readUserInfo(email: String, callback: (User?) -> Unit){
         database.child("users").child(email).get()
             .addOnSuccessListener { it ->
@@ -111,6 +112,10 @@ class CloudInterface {
     }
 
     // Callback function: return likesAmount at present
+    // Comment to Chenglong, use this to read the likes amount data by artwork id. When you use the function, it would be like this:
+    //        firebaseConnection.readArtworkLikes(artworkId){
+    //            println(it) // "it" is the return value of readArtworkLikes
+    //        }
     fun readArtworkLikes(artworksId: String, callback: (Int) -> Unit) {
         database.child("likesAmount").child(artworksId).get()
             .addOnSuccessListener { it ->
