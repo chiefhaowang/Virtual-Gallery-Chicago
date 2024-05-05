@@ -7,15 +7,22 @@ import androidx.room.Query
 import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
 
+// methods to operate the database
 @Dao
 interface ArtworkDao {
-    @Query("SELECT * FROM artworks")
+    // using Flow to dynamically acquire live updates
+    @Query ("SELECT * FROM artworks")
     fun getAllArtworks(): Flow<List<Artwork>>
 
+    // Check if the database is empty
+    @Query("SELECT COUNT(id) FROM artworks")
+    suspend fun countArtworks(): Int
     @Insert
-    suspend fun insertSubject(artwork: Artwork)
+    fun insertArtwork(artwork: Artwork)
+
     @Update
-    suspend fun updateSubject(artwork: Artwork)
+    fun updateArtwork(artwork: Artwork)
+
     @Delete
-    suspend fun deleteSubject(artwork: Artwork)
+    fun deleteArtwork(artwork: Artwork)
 }

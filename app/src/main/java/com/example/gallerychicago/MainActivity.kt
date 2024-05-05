@@ -13,11 +13,10 @@ import com.example.gallerychicago.fireBaseConfig.Connection
 import com.example.gallerychicago.ui.theme.GalleryChicagoTheme
 import androidx.activity.viewModels
 import com.example.gallerychicago.Data.ArtworkViewModel
-import com.example.gallerychicago.Data.ArtworkViewModelFactory
 import com.example.gallerychicago.Screen.BottomNavigationBar
 
 class MainActivity : ComponentActivity() {
-    private val viewModel: ArtworkViewModel by viewModels { ArtworkViewModelFactory(application) }
+    private val viewModel: ArtworkViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -31,8 +30,8 @@ class MainActivity : ComponentActivity() {
             }
         }
         // test the database connection
-        val realtimeDatabaseConnection = Connection()
-        realtimeDatabaseConnection.basicReadWrite()
+        //val realtimeDatabaseConnection = Connection()
+        //realtimeDatabaseConnection.basicReadWrite()
     }
 }
 
@@ -40,6 +39,5 @@ class MainActivity : ComponentActivity() {
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
-    GalleryChicagoTheme {
-    }
+    GalleryChicagoTheme{}
 }

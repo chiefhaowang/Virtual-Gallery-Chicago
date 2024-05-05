@@ -47,7 +47,7 @@ import com.example.gallerychicago.R
 
 @Composable
 fun Exhibition(navController: NavHostController, viewModel: ArtworkViewModel) {
-    val artworks by viewModel.allSubjects.observeAsState()
+    val artworks by viewModel.allArtworks.observeAsState()
     val selectedSubject = remember { mutableStateOf<Artwork?>(null) }
     val insertDialog = remember { mutableStateOf(false) }
 

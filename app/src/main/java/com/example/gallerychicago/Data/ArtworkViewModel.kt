@@ -10,18 +10,21 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-class ArtworkViewModel(application: Application) : AndroidViewModel(application) {
-    private val cRepository: ArtworkRepository
+class ArtworkViewModel(application: Application) : AndroidViewModel(application)
+{
+    // Repository for accessing artwork data. Initializes with the application context and scope.
+    private val cRepository: ArtworkRepository = ArtworkRepository(application, viewModelScope)
 
-    val artworkResponse: MutableState<ArtworkResponse> =
-        mutableStateOf(ArtworkResponse())
     init{
-        cRepository = ArtworkRepository(application)
         viewModelScope.launch {
-            fetchArtworks()
+            // Check if the database is empty
+            if (cRepository.isDatabaseEmpty()) {
+                // If the database is empty, fetch artworks
+                fetchArtworks(20, 1, arrayOf("id", "image_id", "artwork_type_id"))
+            }
         }
     }
-    val allSubjects: LiveData<List<Artwork>> = cRepository.allArtworks.asLiveData()
+    val allArtworks: LiveData<List<Artwork>> = cRepository.allArtworks.asLiveData()
     fun insertArtwork(artwork: Artwork) = viewModelScope.launch(Dispatchers.IO) {
         cRepository.insert(artwork)
     }
@@ -32,19 +35,12 @@ class ArtworkViewModel(application: Application) : AndroidViewModel(application)
         cRepository.delete(artwork)
     }
 
-    private suspend fun fetchArtworks() {
-
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                Log.i("Fetching", "Fetching...")
-                val response = cRepository.getResponse(1,10)
-                Log.d("Response", response.toString())
-                response.artworks.forEach { artwork ->
-                    insertArtwork(artwork)
-                }
-            } catch (e: Exception) {
-                Log.i("Error ", "Response failed")
-            }
+    private fun fetchArtworks(size: Int, artworkTypeId: Int, fields: Array<String>)
+    {
+        // Launch a new coroutine in the scope of ViewModel
+        viewModelScope.launch {
+            // this method is calling api, retrieving and  storing  data in the database
+            cRepository.fetchArtworks(size, artworkTypeId, fields)
         }
     }
 }
