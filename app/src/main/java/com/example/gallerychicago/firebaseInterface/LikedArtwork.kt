@@ -1,5 +1,5 @@
 package com.example.gallerychicago.firebaseInterface
 
 data class LikedArtwork(
-    val artworkId:String? =null
+    val artworkId:Int? = 0
 )
