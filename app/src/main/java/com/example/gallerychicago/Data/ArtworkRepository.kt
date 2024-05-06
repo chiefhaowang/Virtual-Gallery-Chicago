@@ -94,8 +94,6 @@ class ArtworkRepository (application: Application, private val scope: CoroutineS
                 id = artworkData.id,
                 imageId = artworkData.imageId,
                 artworkTypeId = artworkData.artworkTypeId,
-                favourite = false,
-                favouriteCount = 0
             )
             artworkDao.insertArtwork(artwork)
         }

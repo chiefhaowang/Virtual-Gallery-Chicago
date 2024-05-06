@@ -76,7 +76,7 @@ fun Home(navController: NavHostController){
                     .padding(8.dp)
             )
             Button(
-                onClick = { /* Add onClick logic here */ },
+                onClick = { navController.navigate(Routes.Exhibition.value) },
                 modifier = Modifier
                     .padding(25.dp)
                     .fillMaxWidth()
