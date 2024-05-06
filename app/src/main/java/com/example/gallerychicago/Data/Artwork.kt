@@ -14,6 +14,4 @@ data class Artwork(
     val imageId: String,
     @ColumnInfo(name = "artwork_type_id")
     val artworkTypeId: Int,
-    val favourite: Boolean = false,
-    val favouriteCount: Int = 0
 )
