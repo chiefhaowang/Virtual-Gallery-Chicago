@@ -13,6 +13,7 @@ import com.example.gallerychicago.ui.theme.GalleryChicagoTheme
 import androidx.activity.viewModels
 import com.example.gallerychicago.Data.ArtworkViewModel
 import com.example.gallerychicago.Screen.BottomNavigationBar
+import com.example.gallerychicago.Screen.Imagedetials
 import com.example.gallerychicago.firebaseInterface.CloudInterface
 
 class MainActivity : ComponentActivity() {
@@ -25,8 +26,10 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    BottomNavigationBar(viewModel = viewModel)
+//                    BottomNavigationBar(viewModel = viewModel)
+                    Imagedetials()
                 }
+//                Imagedetials()
             }
         }
 
