@@ -2,6 +2,7 @@ package com.example.gallerychicago.firebaseInterface
 
 import android.content.ContentValues
 import android.util.Log
+import com.github.mikephil.charting.data.PieEntry
 import com.google.firebase.Firebase
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -10,11 +11,15 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.database
 import com.google.firebase.database.getValue
 
+
 class CloudInterface {
     private lateinit var database: DatabaseReference
 
-    fun initializaDbRef(){
+    init {
         database = Firebase.database.reference
+    }
+    fun initializaDbRef(){
+
     }
 
     // delete the "." in email: google databse dont permit the special character in index
@@ -30,7 +35,16 @@ class CloudInterface {
     fun initializeUser( email: String ){
         val favouriteArtworks: MutableList<FavouriteArtwork> = mutableListOf()
         val likedArtworks: MutableList<LikedArtwork> = mutableListOf()
+        val likedArtwork = LikedArtwork(27992)
+        val favouriteArtwork = FavouriteArtwork(27992, "Default", 1)
+
+        likedArtworks.add(likedArtwork)
+        favouriteArtworks.add(favouriteArtwork)
+
         val user = User(userIdGenerator(email), favouriteArtworks, likedArtworks)
+
+
+
 
         database.child("users").child(userIdGenerator(email)).setValue(user)
             .addOnSuccessListener {
@@ -87,6 +101,41 @@ class CloudInterface {
                 println("Failed to read user info")
                 callback(null)
             }
+    }
+
+
+    fun readUserFavourite(email: String, callback: (List<PieEntry>?) -> Unit) {
+        // Use the provided types map directly
+        val typeNames = mapOf(
+            1 to "Painting",
+            2 to "Photograph",
+            18 to "Print",
+            3 to "Sculpture",
+            34 to "Architectural",
+            5 to "Textile",
+            6 to "Furniture",
+            23 to "Vessel",
+        )
+
+        readUserInfo(email) { user ->
+            if (user?.favouriteArtworks != null && user.favouriteArtworks.isNotEmpty()) {
+                val total = user.favouriteArtworks.size.toDouble()
+                val typeCount = user.favouriteArtworks.groupingBy { it.type ?: 0 }.eachCount()
+
+                // Calculate the percentages and create PieEntry objects
+                val pieEntries = typeCount.mapNotNull { (type, count) ->
+                    typeNames[type]?.let { name ->
+                        PieEntry((count / total * 100).toFloat(), name)
+                    }
+                }
+
+                // Return the list of PieEntry objects via the callback
+                callback(pieEntries)
+            } else {
+                println("No user or favourite artworks found")
+                callback(null)
+            }
+        }
     }
 
     // Favourite artworks changes data streaming
