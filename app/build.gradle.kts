@@ -86,4 +86,5 @@ dependencies {
     implementation ("androidx.lifecycle:lifecycle-livedata-ktx:2.6.1")
     implementation("androidx.compose.runtime:runtime-livedata:1.6.1")
     implementation("com.jakewharton.timber:timber:5.0.1")
+    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
 }

@@ -25,6 +25,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -43,6 +44,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.gallerychicago.Data.ArtworkDetailsResponse
 import com.example.gallerychicago.Data.ArtworkDetailsService
+import com.example.gallerychicago.Data.UserViewModel
 import com.example.gallerychicago.R
 import com.example.gallerychicago.firebaseInterface.CloudInterface
 import com.example.gallerychicago.firebaseInterface.FavouriteArtwork
@@ -59,10 +61,12 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 // Enterence func: Async waiting for the data fetch operation done then display the data out
 @Composable
-fun DisplayArtworkDetails(artworkId: Int, navController: NavHostController) {
+fun DisplayArtworkDetails(artworkId: Int, navController: NavHostController, userViewModel: UserViewModel) {
     var artworkDetails by remember { mutableStateOf<ArtworkDetailsResponse?>(null) }
     val cloudInterface = CloudInterface()
     cloudInterface.initializaDbRef()
+    val currentUser by userViewModel.currentUser.observeAsState()
+    val email = currentUser?.email
 
     Surface(color = MaterialTheme.colorScheme.surface, modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.fillMaxSize()) {
@@ -76,14 +80,15 @@ fun DisplayArtworkDetails(artworkId: Int, navController: NavHostController) {
                     .background(color = MaterialTheme.colorScheme.primary)
             )
             // Fetching data and display logic
-            val email = "wh.tenghe@gmail.com"
             var user = User()
             LaunchedEffect(Unit) {
-                cloudInterface.readUserInfo(email) {
-                    if (it != null) {
-                        user = User(email, it.favouriteArtworks, it.likedArtworks)
-                    } else {
-                        println("The user info on cloud is null")
+                if (email != null) {
+                    cloudInterface.readUserInfo(email) {
+                        if (it != null) {
+                            user = User(email, it.favouriteArtworks, it.likedArtworks)
+                        } else {
+                            println("The user info on cloud is null")
+                        }
                     }
                 }
             }
@@ -102,7 +107,9 @@ fun DisplayArtworkDetails(artworkId: Int, navController: NavHostController) {
 
             if (artworkDetails != null && user != null) {
                 println("Artwork Details page can be called")
-                ArtworkDetials(artworkDetails!!, email)
+                if (email != null) {
+                    ArtworkDetials(artworkDetails!!, email)
+                }
             } else {
                 Text("")
             }
@@ -299,7 +306,7 @@ fun parseArtworkDetails(jsonResponse: String?): ArtworkDetailsResponse? {
             title = artworkData.get("title")?.asString ?: "Title not Found"
             shortDescription = artworkData.get("short_description")?.asString ?: "Description not Found"
             artistTitle = artworkData.get("artist_title")?.asString ?: "Artist not Found"
-            artworkTypeId = artworkData.get("artwork_type_id")?.asInt ?: 0
+            artworkTypeId = artworkData.get("artwork_type_id")?.asInt ?: 1
             imageId = artworkData.get("image_id")?.asString ?: "2d484387-2509-5e8e-2c43-22f9981972eb"
 
             println("Parsed ArtworkDetailsResponse: { id=$id, title='$title', shortDescription='$shortDescription', artistTitle='$artistTitle', artworkTypeId=$artworkTypeId, imageId='$imageId' }")

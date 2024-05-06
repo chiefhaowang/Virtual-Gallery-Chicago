@@ -70,7 +70,7 @@ fun BottomNavigationBar(viewModel: ArtworkViewModel, userViewModel: UserViewMode
             }
             composable(Routes.ReportScreen.value)
             {
-                ReportScreen(navController)
+                ReportScreen(navController, userViewModel)
             }
             composable(Routes.UserProfile.value)
             {
@@ -93,7 +93,7 @@ fun BottomNavigationBar(viewModel: ArtworkViewModel, userViewModel: UserViewMode
                 arguments = listOf(navArgument("imageId") { type = NavType.IntType })
             ) { backStackEntry ->
                 val imageId = backStackEntry.arguments?.getInt("imageId") ?: 0
-                DisplayArtworkDetails(imageId, navController)
+                DisplayArtworkDetails(imageId, navController, userViewModel)
             }
 //            composable(
 //                "imageDetails/{imageId}",
