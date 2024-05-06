@@ -12,9 +12,14 @@ import kotlinx.coroutines.CoroutineScope
 import retrofit2.Response
 
 //Repository is a layer between UI and database
-class ArtworkRepository (application: Application, private val scope: CoroutineScope) {
-
+class ArtworkRepository (application: Application, private val scope: CoroutineScope)
+{
+    // initialize the DAO methods for artwork and user
     private var artworkDao: ArtworkDao = ArtworkDatabase.getDatabase(application).artworkDAO()
+    private var userDao: UserDao = ArtworkDatabase.getDatabase(application).userDAO()
+    /***
+     *  methods for artwork management
+     */
     // get all artworks
     val allArtworks: Flow<List<Artwork>> = artworkDao.getAllArtworks()
 
@@ -37,6 +42,36 @@ class ArtworkRepository (application: Application, private val scope: CoroutineS
         artworkDao.updateArtwork(artwork)
     }
 
+    /**
+     * Methods for user data management
+     */
+    val allUsers: Flow<List<User>> = userDao.getAllUsers()
+
+    suspend fun insertUser(user: User) {
+        userDao.insert(user)
+    }
+
+    suspend fun updateUser(user: User) {
+        userDao.updateUser(user)
+    }
+
+    suspend fun updateUserName(userId: Int, name: String) {
+        userDao.updateUserName(userId, name)
+    }
+
+    suspend fun updateUserDescription(userId: Int, description: String) {
+        userDao.updateUserDescription(userId, description)
+    }
+
+    // Check if the email exists in the database
+    suspend fun isEmailExists(email: String): Boolean {
+        return userDao.isEmailExists(email)
+    }
+
+    /**
+     * methods to call api and get required data and store data in database
+     * [ generateParams, fetchArtworks, storeArtworkInDatabase]
+     */
     // generateParams contains three parameters to construct the request
      private fun generateParams(size: Int, artworkTypeId: Int, fields: Array<String>): String {
         val paramsMap = mapOf(

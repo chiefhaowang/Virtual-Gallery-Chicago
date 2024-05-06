@@ -22,17 +22,72 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.Alignment
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavHostController
 import com.example.gallerychicago.R
+
+
+// logic to control edit
+@Composable
+fun EditDialog(
+    initialValue: String,
+    label: String,
+    onSave: (String) -> Unit,
+    onDismiss: () -> Unit
+) {
+    var text by remember { mutableStateOf(initialValue) }
+
+    Dialog(onDismissRequest = { onDismiss() }) {
+        Column(
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text("$label", style = MaterialTheme.typography.headlineSmall)
+            TextField(
+                value = text,
+                onValueChange = { text = it },
+                label = { Text(label) },
+                modifier = Modifier.fillMaxWidth()
+            )
+            Spacer(modifier = Modifier.height(20.dp))
+            Row(
+                horizontalArrangement = Arrangement.End,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Button(
+                    onClick = { onSave(text) },
+                    modifier = Modifier.padding(end = 8.dp)
+                ) {
+                    Text("Save")
+                }
+                Button(onClick = { onDismiss() }) {
+                    Text("Cancel")
+                }
+            }
+        }
+    }
+}
+
 
 @Composable
 fun UserProfile(navController: NavHostController)
 {
+    var showDialog by remember { mutableStateOf(false) }
+    var username by remember { mutableStateOf("Arthur Song") }
+
     Column(modifier = Modifier
     .fillMaxSize()
     .background(Color(0xFFE8D8C4)),
@@ -81,7 +136,7 @@ fun UserProfile(navController: NavHostController)
             ) {
 
                 Text(
-                    text = "Username: Arthur Song",
+                    text = "Username: $username",
                     style = TextStyle(
                         fontFamily = FontFamily.Serif,
                         fontSize = 19.sp,
@@ -89,10 +144,21 @@ fun UserProfile(navController: NavHostController)
                     ),
                     modifier = Modifier.padding(20.dp) //
                 )
-                Button(onClick = { },
+                Button(onClick = { showDialog = true},
                     colors = ButtonDefaults.buttonColors(Color(0xFF952323)))
                 {
                     Text("Edit")
+                }
+                if (showDialog) {
+                    EditDialog(
+                        initialValue = username,
+                        label = "Username",
+                        onSave = { newName ->
+                            username = newName // update user name
+                            showDialog = false
+                        },
+                        onDismiss = { showDialog = false }
+                    )
                 }
             }
             Spacer(modifier = Modifier.height(10.dp))
