@@ -12,10 +12,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.gallerychicago.ui.theme.GalleryChicagoTheme
 import androidx.activity.viewModels
 import com.example.gallerychicago.Data.ArtworkViewModel
-import com.example.gallerychicago.Screen.BottomNavigationBar
-import com.example.gallerychicago.Screen.Imagedetials
-import com.example.gallerychicago.Screen.UserFavourite
-import com.example.gallerychicago.firebaseInterface.CloudInterface
+import com.example.gallerychicago.Screen.DisplayArtworkDetails
 
 class MainActivity : ComponentActivity() {
     private val viewModel: ArtworkViewModel by viewModels()
@@ -27,8 +24,9 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    BottomNavigationBar(viewModel = viewModel)
-
+                    //BottomNavigationBar(viewModel = viewModel)
+                    //Imagedetials(27992)
+                    DisplayArtworkDetails(27992)
                 }
             }
         }

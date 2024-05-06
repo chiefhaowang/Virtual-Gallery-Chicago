@@ -14,4 +14,12 @@ data class ArtworkResponse(
     val data: List<ArtworkData>
 )
 
-
+// Retrieving data for details
+data class ArtworkDetails(
+    val id: Int? = 0,
+    val title: String? = "",
+    val description: String? = "",
+    val artist: String? = "",
+    val typeId: Int? = 0,
+    val imageId: String? = ""
+)

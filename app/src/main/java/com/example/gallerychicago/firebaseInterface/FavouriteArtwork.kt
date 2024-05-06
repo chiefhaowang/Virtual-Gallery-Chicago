@@ -1,6 +1,6 @@
 package com.example.gallerychicago.firebaseInterface
 
 data class FavouriteArtwork(
-    val artworkId:String? = null,
-    val artworkDesc: String? = null
+    val artworkId:Int? = 0,
+    val type: Int? = 1
 )
