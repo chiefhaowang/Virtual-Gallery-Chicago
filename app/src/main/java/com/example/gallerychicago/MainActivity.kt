@@ -12,6 +12,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.gallerychicago.ui.theme.GalleryChicagoTheme
 import androidx.activity.viewModels
 import com.example.gallerychicago.Data.ArtworkViewModel
+import com.example.gallerychicago.Screen.BottomNavigationBar
 import com.example.gallerychicago.Screen.DisplayArtworkDetails
 
 class MainActivity : ComponentActivity() {
@@ -24,9 +25,9 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    //BottomNavigationBar(viewModel = viewModel)
-                    //Imagedetials(27992)
-                    DisplayArtworkDetails(27992)
+                    BottomNavigationBar(viewModel = viewModel)
+
+                    //DisplayArtworkDetails(27992)
                 }
             }
         }
