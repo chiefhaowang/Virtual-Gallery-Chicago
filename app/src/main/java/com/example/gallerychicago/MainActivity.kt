@@ -33,8 +33,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     BottomNavigationBar(viewModel = viewModel)
-
-                    //DisplayFavouriteList()
+                    //DisplayArtworkDetails(8624)
                     //RegistrationScreen()
 
                 }
