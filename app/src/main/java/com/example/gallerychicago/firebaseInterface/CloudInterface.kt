@@ -109,7 +109,7 @@ class CloudInterface {
     }
 
 
-    // Not completed
+
     // all changes happened while add or cancel likes (user object change and likes amount change)
     fun addArtworkLikeCloud(userId: String, artworkId: String){
         // Add liked artwork like in user object
