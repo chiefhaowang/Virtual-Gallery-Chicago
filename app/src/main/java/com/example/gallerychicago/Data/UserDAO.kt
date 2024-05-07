@@ -19,6 +19,14 @@ interface UserDao
     @Update
     suspend fun updateUser(user: User)
 
+    // get user by id
+    @Query("SELECT * FROM users WHERE id = :userId")
+    suspend fun getUserById(userId: Int): User?
+
+    // get user by email
+    @Query("SELECT * FROM users WHERE email = :email")
+    suspend fun getUserByEmail(email: String): User?
+
     // update username
     @Query("UPDATE users SET name = :name WHERE id =  :userId")
     suspend fun updateUserName(userId: Int, name: String)

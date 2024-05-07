@@ -51,7 +51,7 @@ import android.app.DatePickerDialog
 import android.os.Build
 import android.widget.Toast
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.gallerychicago.Data.ArtworkViewModel
+import com.example.gallerychicago.Data.UserViewModel
 import androidx.annotation.RequiresApi
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.*
@@ -62,7 +62,7 @@ import java.util.*
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun RegistrationScreen(userViewModel: ArtworkViewModel = viewModel()) {
+fun RegistrationScreen(userViewModel: UserViewModel = viewModel()) {
     val emailAvailable by userViewModel.emailAvailable.observeAsState()
 
     val context = LocalContext.current
