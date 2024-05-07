@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -46,6 +47,27 @@ fun UserFavourite() {
                     .fillMaxWidth()
                     .background(color = MaterialTheme.colorScheme.primary)
             )
+            Text(
+                text = "Welcome to the favourite list!\nHow can we assist you today?",
+                fontSize = 20.sp,
+                color = Color.Black,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp)
+            )
+            Text(
+                text = "Your Favourite List",
+                fontSize = 24.sp,
+                color = Color.Black,
+                style = MaterialTheme.typography.headlineLarge,
+                textAlign = TextAlign.Left,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp)
+            )
+
+
         }
     }
 

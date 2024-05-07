@@ -43,7 +43,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 
-// Enterence func: waiting for the data fetch operation done then display the daya out
+// Enterence func: waiting for the data fetch operation done then display the data out
 @Composable
 fun DisplayArtworkDetails(artworkId: Int) {
     var artworkDetails by remember { mutableStateOf<ArtworkDetails?>(null) }
