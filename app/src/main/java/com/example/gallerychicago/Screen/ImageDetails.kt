@@ -34,6 +34,7 @@ import coil.request.ImageRequest
 import com.example.gallerychicago.Data.ArtworkDetails
 import com.example.gallerychicago.Data.ArtworkDetailsService
 import com.example.gallerychicago.R
+import com.example.gallerychicago.firebaseInterface.FavouriteArtwork
 import com.google.gson.JsonElement
 import com.google.gson.JsonParser
 import retrofit2.Call
@@ -154,7 +155,7 @@ fun ImageDisplay(url: String) {
 }
 
 // use retrofit to retrieve data for details
-fun fetchArtworkDetails(artworkId: Int, callback: ( ArtworkDetails?) -> Unit) {
+fun fetchArtworkDetails(artworkId: Int, callback: (ArtworkDetails?) -> Unit){
     val retrofit = Retrofit.Builder()
         .baseUrl("https://api.artic.edu/api/v1/")
         .addConverterFactory(GsonConverterFactory.create())

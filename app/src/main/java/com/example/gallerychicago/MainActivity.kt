@@ -13,7 +13,10 @@ import com.example.gallerychicago.ui.theme.GalleryChicagoTheme
 import androidx.activity.viewModels
 import com.example.gallerychicago.Data.ArtworkViewModel
 import com.example.gallerychicago.Screen.BottomNavigationBar
+import com.example.gallerychicago.Screen.DisplayArtworkDetails
+import com.example.gallerychicago.Screen.DisplayFavouriteList
 import com.example.gallerychicago.Screen.UserFavourite
+import com.example.gallerychicago.firebaseInterface.CloudInterface
 
 class MainActivity : ComponentActivity() {
     private val viewModel: ArtworkViewModel by viewModels()
@@ -26,7 +29,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     //BottomNavigationBar(viewModel = viewModel)
-                    UserFavourite()
+                    DisplayFavouriteList("wh.tenghe@gmail.com")
                     //DisplayArtworkDetails(27992)
                 }
             }
@@ -35,7 +38,7 @@ class MainActivity : ComponentActivity() {
         // Google firebase database interface test area ()
 //        val firebaseConnection = CloudInterface()
 //        firebaseConnection.initializaDbRef()
-//        firebaseConnection.userDataGenerator("wh.tenghe@gmail.com", 27992, 1)
+//        firebaseConnection.userDataGeneratorAdd("wh.tenghe@gmail.com", 205, "title 3", 23)
     }
 }
 

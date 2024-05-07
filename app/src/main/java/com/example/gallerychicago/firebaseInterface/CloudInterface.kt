@@ -200,7 +200,7 @@ class CloudInterface {
         })
     }
 
-    fun userDataGenerator(email: String, artworkId: Int, title: String, typeId: Int){
+    fun userDataGeneratorInit(email: String, artworkId: Int, title: String, typeId: Int){
         val likedArtwork = LikedArtwork(artworkId)
         val favouriteArtwork = FavouriteArtwork(artworkId, title, typeId)
 
@@ -214,5 +214,24 @@ class CloudInterface {
 
         writeUserInfo(email, user)
 
+    }
+
+    fun userDataGeneratorAdd(email: String, artworkId: Int, title: String, typeId: Int){
+        readUserInfo(email){
+            var user = User()
+            val favouriteArtwork = FavouriteArtwork(artworkId, title, typeId)
+            var favouriteArtworks: MutableList<FavouriteArtwork> = mutableListOf()
+            if (it != null) {
+                println(it.favouriteArtworks)
+                favouriteArtworks = it.favouriteArtworks as MutableList<FavouriteArtwork>
+            }
+            favouriteArtworks.add(favouriteArtwork)
+            if (it != null) {
+                user = User(userIdGenerator(email),favouriteArtworks, it.likedArtworks)
+            }
+            if (it != null) {
+                writeUserInfo(it.email.toString(), user)
+            }
+        }
     }
 }
