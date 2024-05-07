@@ -3,6 +3,7 @@ package com.example.gallerychicago.Data
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
@@ -10,19 +11,21 @@ import kotlinx.coroutines.flow.Flow
 // methods to operate the database
 @Dao
 interface ArtworkDao {
-    // using Flow to dynamically acquire live updates
-    @Query ("SELECT * FROM artworks")
-    fun getAllArtworks(): Flow<List<Artwork>>
+    @Query("SELECT * FROM artworks")
+    fun getAllArtworks(): List<Artwork>
 
-    // Check if the database is empty
-    @Query("SELECT COUNT(id) FROM artworks")
-    suspend fun countArtworks(): Int
-    @Insert
-    fun insertArtwork(artwork: Artwork)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertArtwork(artwork: Artwork)
 
     @Update
-    fun updateArtwork(artwork: Artwork)
+    suspend fun updateArtwork(artwork: Artwork)
 
     @Delete
-    fun deleteArtwork(artwork: Artwork)
+    suspend fun deleteArtwork(artwork: Artwork)
+
+    @Query("SELECT * FROM artworks WHERE artworkTypeId = :TypeId")
+    suspend fun getArtworksByType(TypeId: Int): List<Artwork>
+
+    @Query("DELETE FROM artworks")
+    suspend fun clearAll()
 }
