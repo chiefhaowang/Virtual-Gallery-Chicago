@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -74,7 +75,7 @@ fun ArtworkDetials(artworkDetails: ArtworkDetailsResponse) {
     println("Artwork Details page has been called")
     Surface(color = MaterialTheme.colorScheme.surface) {
         Column(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth().fillMaxHeight()
         ) {
 
             Text(
@@ -89,8 +90,11 @@ fun ArtworkDetials(artworkDetails: ArtworkDetailsResponse) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(250.dp),
+                    .height(300.dp),
 //            contentAlignment = Alignment.Center
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .fillMaxHeight()
             ) {
                 ImageDisplay("https://www.artic.edu/iiif/2/${artworkDetails.imageId}/full/400,/0/default.jpg")
             }
