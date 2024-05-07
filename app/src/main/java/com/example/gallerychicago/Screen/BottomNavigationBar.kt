@@ -57,8 +57,8 @@ fun BottomNavigationBar(viewModel: ArtworkViewModel) {
     ) { paddingValues ->
         NavHost(
             navController,
-            //startDestination = Routes.Home.value,
-            startDestination = "FavouriteList",
+            startDestination = Routes.Home.value,
+            //startDestination = "FavouriteList",
             Modifier.padding(paddingValues)
         ) {
             composable(Routes.Home.value) {
