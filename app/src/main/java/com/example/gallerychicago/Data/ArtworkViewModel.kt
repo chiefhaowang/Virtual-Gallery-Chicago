@@ -2,12 +2,10 @@ package com.example.gallerychicago.Data
 
 import android.app.Application
 import android.util.Log
-import androidx.compose.runtime.Composable
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.compose.rememberNavController
-import com.example.gallerychicago.Screen.DisplayArtworkDetails
+import androidx.navigation.NavHostController
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -195,8 +193,8 @@ class ArtworkViewModel(application: Application) : AndroidViewModel(application)
      * @param imageId The ID of the clicked artwork image.
      */
 
-    fun onImageClick(imageId: Int) {
+    fun onImageClick(imageId: Int, navController: NavHostController) {
         Log.i("ImageClicked", "Image ID: $imageId")
-        //DisplayArtworkDetails(imageId)
+        navController.navigate("imageDetails/$imageId")
     }
 }
