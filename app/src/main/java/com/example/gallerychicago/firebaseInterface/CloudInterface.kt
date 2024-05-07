@@ -21,8 +21,9 @@ class CloudInterface {
     fun userIdGenerator(email: String): String {
         return email.replace(".", "")
     }
-    // User Data Streaming
 
+
+    // User Data Streaming
     // Comment to Garfield: function for user registration
     // Use case: Every user registration will call this function
     // Functionality: Simply build a new user row with email
@@ -88,20 +89,56 @@ class CloudInterface {
             }
     }
 
-
-    // User Liked artworks data streaming
-    // Not completed
-    fun addLikedArtwork(email: String, artworkId: String){
+    // Favourite artworks changes data streaming
+    fun addFavouriteArtworkUser(email: String, favouriteArtwork: FavouriteArtwork){
 
     }
 
-    fun cancelLikedArtwork(email: String, artworkId: String){
+    fun cancelFavouriteArtworkUser(email: String, artworkId: Int){
 
+    }
+
+    // liked artworks data in user object
+    // Not completed
+    fun addLikedArtworkUser(email: String, artworkId: String){
+
+    }
+
+    fun cancelLikedArtworkUser(email: String, artworkId: String){
+
+    }
+
+
+    // Not completed
+    // all changes happened while add or cancel likes (user object change and likes amount change)
+    fun addArtworkLikeCloud(userId: String, artworkId: String){
+        // Add liked artwork like in user object
+        addLikedArtworkUser(userId, artworkId)
+
+        // Change the entire user likes data
+        readArtworkLikes(artworkId) {
+            val likesAmount = it + 1
+            println("Likes amount at present: $likesAmount")
+            writeArtworkLikes(artworkId, likesAmount)
+        }
+
+    }
+
+    fun cancelArtworkLikeCloud(email: String, artworkId: String){
+
+        // Add liked artwork like in user object
+        cancelLikedArtworkUser(email, artworkId)
+
+        // Change the entire user likes data
+        readArtworkLikes("artwork-one") {
+            val likesAmount = it - 1
+            println("Likes amount at present: $likesAmount")
+            writeArtworkLikes(artworkId, likesAmount)
+        }
     }
 
 
     // ArtworkLikes amount Data Streaming
-
     // Enforce write the new value to existing or non-existing index
     fun writeArtworkLikes(artworksId: String, likesAmount: Int){
         //val artworkLikesAmount = LikesAmount(artworksId, likesAmount)
@@ -137,34 +174,6 @@ class CloudInterface {
     }
 
 
-    // Not completed
-    fun addSingleArtworkLike(userId: String, artworkId: String){
-        // Add liked artwork like in user object
-        addLikedArtwork(userId, artworkId)
-
-        // Change the entire user likes data
-        readArtworkLikes(artworkId) {
-            val likesAmount = it + 1
-            println("Likes amount at present: $likesAmount")
-            writeArtworkLikes(artworkId, likesAmount)
-        }
-
-    }
-
-    fun cancelArtworkLike(email: String, artworkId: String){
-
-        // Add liked artwork like in user object
-        cancelLikedArtwork(email, artworkId)
-
-        // Change the entire user likes data
-        readArtworkLikes("artwork-one") {
-            val likesAmount = it - 1
-            println("Likes amount at present: $likesAmount")
-            writeArtworkLikes(artworkId, likesAmount)
-        }
-    }
-
-
     // Firebase database connection test
     fun basicReadWrite() {
 
@@ -191,9 +200,9 @@ class CloudInterface {
         })
     }
 
-    fun userDataGenerator(email: String, artworkId: Int, typeId: Int){
+    fun userDataGenerator(email: String, artworkId: Int, title: String, typeId: Int){
         val likedArtwork = LikedArtwork(artworkId)
-        val favouriteArtwork = FavouriteArtwork(artworkId, typeId)
+        val favouriteArtwork = FavouriteArtwork(artworkId, title, typeId)
 
         val likedArtworks: MutableList<LikedArtwork> = mutableListOf()
         likedArtworks.add(likedArtwork)
