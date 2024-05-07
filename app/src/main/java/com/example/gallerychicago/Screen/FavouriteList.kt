@@ -32,7 +32,7 @@ import com.example.gallerychicago.firebaseInterface.FavouriteArtwork
 
 @Composable
 fun DisplayFavouriteList(navController: NavController) {
-    val email = "wh.tenghe@gmail.com"
+    val email = "wh.tenghe@gmail.com" // used for unit test
     var favouriteArtworks by remember { mutableStateOf(emptyList<FavouriteArtwork>()) }
     LaunchedEffect(Unit) {
         fetchCloudData(email) { artworks ->
