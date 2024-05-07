@@ -17,15 +17,19 @@ class CloudInterface {
         database = Firebase.database.reference
     }
 
+    // delete the "." in email: google databse dont permit the special character in index
+    fun userIdGenerator(email: String): String {
+        return email.replace(".", "")
+    }
     // User Data Streaming
 
     // Comment to Garfield: function for user registration
     // Use case: Every user registration will call this function
     // Functionality: Simply build a new user row with email
     fun initializeUser( email: String ){
-        val favouriteArtworks: List<FavouriteArtwork> = listOf()
-        val likedArtworks: List<LikedArtwork> = listOf()
-        val user = User(email, favouriteArtworks, likedArtworks)
+        val favouriteArtworks: MutableList<FavouriteArtwork> = mutableListOf()
+        val likedArtworks: MutableList<LikedArtwork> = mutableListOf()
+        val user = User(userIdGenerator(email), favouriteArtworks, likedArtworks)
 
         database.child("users").child(email).setValue(user)
             .addOnSuccessListener {
@@ -40,7 +44,7 @@ class CloudInterface {
     // Use case: Every user google login will call this function
     // Functionality: check the email has been used then decide to create a user or not
     fun initializeUserGoogleLogin(email: String, callback: (User?) -> Unit){
-        database.child("users").child(email).get()
+        database.child("users").child(userIdGenerator(email)).get()
             .addOnSuccessListener { it ->
                 if (it.exists()) {
                     val user = it.getValue(User::class.java)
@@ -58,7 +62,7 @@ class CloudInterface {
 
     // Comment to Cenglong: use this to write user data(generate test data manually)
     fun writeUserInfo(email: String, user: User){
-        database.child("users").child(email).setValue(user)
+        database.child("users").child(userIdGenerator(email)).setValue(user)
             .addOnSuccessListener {
                 println("user data added")
             }
@@ -69,7 +73,7 @@ class CloudInterface {
 
     // Comment to Chenglong: Use this to read user data to get user likes and favourite list
     fun readUserInfo(email: String, callback: (User?) -> Unit){
-        database.child("users").child(email).get()
+        database.child("users").child(userIdGenerator(email)).get()
             .addOnSuccessListener { it ->
                 if (it.exists()) {
                     val user = it.getValue(User::class.java)
@@ -185,5 +189,21 @@ class CloudInterface {
                 Log.w(ContentValues.TAG, "Failed to read value.", error.toException())
             }
         })
+    }
+
+    fun userDataGenerator(email: String, artworkId: Int, typeId: Int){
+        val likedArtwork = LikedArtwork(artworkId)
+        val favouriteArtwork = FavouriteArtwork(artworkId, typeId)
+
+        val likedArtworks: MutableList<LikedArtwork> = mutableListOf()
+        likedArtworks.add(likedArtwork)
+
+        val favouriteArtworks: MutableList<FavouriteArtwork> = mutableListOf()
+        favouriteArtworks.add(favouriteArtwork)
+
+        val user = User(userIdGenerator(email), favouriteArtworks, likedArtworks )
+
+        writeUserInfo(email, user)
+
     }
 }
