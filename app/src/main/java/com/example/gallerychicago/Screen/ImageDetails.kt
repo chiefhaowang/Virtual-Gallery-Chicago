@@ -31,10 +31,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.example.gallerychicago.Data.ArtworkDetails
+import com.example.gallerychicago.Data.ArtworkDetailsResponse
 import com.example.gallerychicago.Data.ArtworkDetailsService
 import com.example.gallerychicago.R
-import com.example.gallerychicago.firebaseInterface.FavouriteArtwork
 import com.google.gson.JsonElement
 import com.google.gson.JsonParser
 import retrofit2.Call
@@ -47,13 +46,18 @@ import retrofit2.converter.gson.GsonConverterFactory
 // Enterence func: waiting for the data fetch operation done then display the data out
 @Composable
 fun DisplayArtworkDetails(artworkId: Int) {
-    var artworkDetails by remember { mutableStateOf<ArtworkDetails?>(null) }
+    var artworkDetails by remember { mutableStateOf<ArtworkDetailsResponse?>(null) }
     println("Receive image ID from other pages: $artworkId")
     LaunchedEffect(Unit) {
+        println("1")
         fetchArtworkDetails(artworkId) {
+            println("2")
             if (it != null) {
                 artworkDetails = it
                 println("API Response: $artworkDetails")
+            }
+            else{
+                println("Got a null json reply")
             }
         }
     }
@@ -66,7 +70,7 @@ fun DisplayArtworkDetails(artworkId: Int) {
 }
 
 @Composable
-fun ArtworkDetials(artworkDetails: ArtworkDetails) {
+fun ArtworkDetials(artworkDetails: ArtworkDetailsResponse) {
     println("Artwork Details page has been called")
     Surface(color = MaterialTheme.colorScheme.surface) {
         Column(
@@ -157,7 +161,7 @@ fun ImageDisplay(url: String) {
 }
 
 // use retrofit to retrieve data for details
-fun fetchArtworkDetails(artworkId: Int, callback: (ArtworkDetails?) -> Unit){
+fun fetchArtworkDetails(artworkId: Int, callback: (ArtworkDetailsResponse?) -> Unit){
     val retrofit = Retrofit.Builder()
         .baseUrl("https://api.artic.edu/api/v1/")
         .addConverterFactory(GsonConverterFactory.create())
@@ -172,7 +176,10 @@ fun fetchArtworkDetails(artworkId: Int, callback: (ArtworkDetails?) -> Unit){
         .enqueue(object : Callback<JsonElement> {
             override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>) {
                 val jsonResponse = response.body()?.toString()
-                callback(parseArtworkDetails(jsonResponse))
+                println("JSON response is: $jsonResponse")
+                val artworkDetails = parseArtworkDetails(jsonResponse)
+                println("Parsed JSON pack: $artworkDetails")
+                callback(artworkDetails)
             }
 
             override fun onFailure(call: Call<JsonElement>, t: Throwable) {
@@ -182,24 +189,59 @@ fun fetchArtworkDetails(artworkId: Int, callback: (ArtworkDetails?) -> Unit){
 }
 
 // Convert the response json to object
-fun parseArtworkDetails(jsonResponse: String?): ArtworkDetails? {
-    if (jsonResponse == null){
-        println("Have got a empty json pack")
-        return null}
+//fun parseArtworkDetails(jsonResponse: String?): ArtworkDetailsResponse? {
+//    if (jsonResponse == null){
+//        println("Have got a empty json pack")
+//        return null}
+//
+//    val jsonObject = JsonParser.parseString(jsonResponse).asJsonObject
+//    println("JSON object is(After parsering): $jsonObject")
+//    val data = jsonObject.getAsJsonArray("data")
+//    if (data.size() > 0) {
+//        val artworkData = data[0].asJsonObject
+//        println("Finalised JSON is: $artworkData")
+//        val artworkDetailsResponse = ArtworkDetailsResponse(
+//            artworkData.get("id")?.asInt ?: 27992,
+//            artworkData.get("title")?.asString ?: "",
+//            artworkData.get("short_description")?.asString ?: "",
+//            artworkData.get("artist_title")?.asString ?: "",
+//            artworkData.get("artwork_type_id")?.asInt ?: 0,
+//            artworkData.get("image_id")?.asString ?: ""
+//            )
+//        println("The returned object is $artworkDetailsResponse")
+//
+//        return artworkDetailsResponse
+//    }
+//
+//    return null
+//}
 
+fun parseArtworkDetails(jsonResponse: String?): ArtworkDetailsResponse? {
+    try {
+        if (jsonResponse.isNullOrEmpty()) {
+            println("JSON response is empty or null")
+            return null
+        }
 
-    val jsonObject = JsonParser.parseString(jsonResponse).asJsonObject
-    val data = jsonObject.getAsJsonArray("data")
-    if (data.size() > 0) {
-        val artworkData = data[0].asJsonObject
-        return ArtworkDetails(
-            artworkData.get("id").asInt,
-            artworkData.get("title").asString,
-            artworkData.get("short_description").asString,
-            artworkData.get("artist_title").asString,
-            artworkData.get("artwork_type_id").asInt,
-            artworkData.get("image_id").asString
-        )
+        val jsonObject = JsonParser.parseString(jsonResponse).asJsonObject
+        val data = jsonObject.getAsJsonArray("data")
+        if (data.size() > 0) {
+            val artworkData = data[0].asJsonObject
+            val id = artworkData.get("id")?.asInt ?: return null
+            val title = artworkData.get("title")?.asString ?: ""
+            val shortDescription = artworkData.get("short_description")?.asString ?: ""
+            val artistTitle = artworkData.get("artist_title")?.asString ?: ""
+            val artworkTypeId = artworkData.get("artwork_type_id")?.asInt ?: 0
+            val imageId = artworkData.get("image_id")?.asString ?: ""
+
+            println("Parsed ArtworkDetailsResponse: { id=$id, title='$title', shortDescription='$shortDescription', artistTitle='$artistTitle', artworkTypeId=$artworkTypeId, imageId='$imageId' }")
+
+            return ArtworkDetailsResponse(id, title, shortDescription, artistTitle, artworkTypeId, imageId)
+        } else {
+            println("No data found in JSON response")
+        }
+    } catch (e: Exception) {
+        println("Error parsing JSON: ${e.message}")
     }
 
     return null
