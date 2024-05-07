@@ -32,12 +32,12 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    //BottomNavigationBar(viewModel = viewModel)
+                    BottomNavigationBar(viewModel = viewModel)
 
-                    DisplayFavouriteList("wh.tenghe@gmail.com")
+                    //DisplayFavouriteList("wh.tenghe@gmail.com")
 
                     //DisplayArtworkDetails(27992)
-                    RegistrationScreen()
+                    //RegistrationScreen()
 
                 }
             }
