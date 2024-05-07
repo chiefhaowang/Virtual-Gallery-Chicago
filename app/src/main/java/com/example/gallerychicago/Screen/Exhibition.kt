@@ -1,7 +1,6 @@
 package com.example.gallerychicago.Screen
 
 import android.util.Log
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -16,7 +15,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
@@ -24,7 +22,6 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.gallerychicago.Data.Artwork
 import com.example.gallerychicago.Data.ArtworkViewModel
-import com.example.gallerychicago.R
 
 @Composable
 // Composable function to display the exhibition screen.
@@ -74,8 +71,8 @@ fun Exhibition(navController: NavHostController, viewModel: ArtworkViewModel) {
                 ) {
                     artworks?.let {
                         // Ensure artworks is not null and display the ExhibitionContent
-                        ExhibitionContent(artworks = it, onClick = { id ->
-                            viewModel.onImageClick(id)
+                        ExhibitionContent(artworks = it, navController, onClick = { id ->
+                            viewModel.onImageClick(id, navController)
                         })
                     }
                 }
@@ -86,7 +83,7 @@ fun Exhibition(navController: NavHostController, viewModel: ArtworkViewModel) {
 
 @Composable
 // Composable function to display the content of the exhibition.
-fun ExhibitionContent(artworks: List<Artwork>, onClick: (Int) -> Unit) {
+fun ExhibitionContent(artworks: List<Artwork>, navController: NavHostController, onClick: (Int) -> Unit) {
     // Extract URLs of artworks' images
     val urls = artworks.mapNotNull { artwork ->
         artwork.imageId?.let { imageId ->

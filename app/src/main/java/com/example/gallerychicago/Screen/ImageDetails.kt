@@ -48,15 +48,17 @@ import retrofit2.converter.gson.GsonConverterFactory
 @Composable
 fun DisplayArtworkDetails(artworkId: Int) {
     var artworkDetails by remember { mutableStateOf<ArtworkDetails?>(null) }
-
+    println("Receive image ID from other pages: $artworkId")
     LaunchedEffect(Unit) {
         fetchArtworkDetails(artworkId) {
             if (it != null) {
                 artworkDetails = it
+                println("API Response: $artworkDetails")
             }
         }
     }
     if (artworkDetails != null) {
+        println("Artwork Details page can be called")
         ArtworkDetials(artworkDetails!!)
     } else {
         println("")
@@ -65,7 +67,7 @@ fun DisplayArtworkDetails(artworkId: Int) {
 
 @Composable
 fun ArtworkDetials(artworkDetails: ArtworkDetails) {
-
+    println("Artwork Details page has been called")
     Surface(color = MaterialTheme.colorScheme.surface) {
         Column(
             modifier = Modifier.fillMaxWidth()
@@ -181,7 +183,10 @@ fun fetchArtworkDetails(artworkId: Int, callback: (ArtworkDetails?) -> Unit){
 
 // Convert the response json to object
 fun parseArtworkDetails(jsonResponse: String?): ArtworkDetails? {
-    if (jsonResponse == null) return null
+    if (jsonResponse == null){
+        println("Have got a empty json pack")
+        return null}
+
 
     val jsonObject = JsonParser.parseString(jsonResponse).asJsonObject
     val data = jsonObject.getAsJsonArray("data")

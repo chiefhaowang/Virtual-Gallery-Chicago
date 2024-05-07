@@ -34,9 +34,7 @@ class MainActivity : ComponentActivity() {
                 ) {
                     BottomNavigationBar(viewModel = viewModel)
 
-                    //DisplayFavouriteList("wh.tenghe@gmail.com")
-
-                    //DisplayArtworkDetails(27992)
+                    //DisplayFavouriteList()
                     //RegistrationScreen()
 
                 }

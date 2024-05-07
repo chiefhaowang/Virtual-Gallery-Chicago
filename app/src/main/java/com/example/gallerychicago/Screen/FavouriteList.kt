@@ -3,6 +3,7 @@ package com.example.gallerychicago.Screen
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -20,19 +21,23 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.example.gallerychicago.Data.ArtworkDetails
 import com.example.gallerychicago.firebaseInterface.CloudInterface
 import com.example.gallerychicago.firebaseInterface.FavouriteArtwork
 
 
 @Composable
-fun DisplayFavouriteList(email: String) {
+fun DisplayFavouriteList(navController: NavController) {
+    val email = "wh.tenghe@gmail.com"
     var favouriteArtworks by remember { mutableStateOf(emptyList<FavouriteArtwork>()) }
-
     LaunchedEffect(Unit) {
         fetchCloudData(email) { artworks ->
             if (artworks != null) {
@@ -41,11 +46,14 @@ fun DisplayFavouriteList(email: String) {
         }
     }
 
-    UserFavourite(favouriteArtworks)
+    UserFavourite(favouriteArtworks, navController){
+        //println("Image ID(passed from favourite list item): $it")
+    }
 }
 @Composable
-fun UserFavourite(favouriteArtworks: List<FavouriteArtwork>) {
-    println(favouriteArtworks)
+fun UserFavourite(favouriteArtworks: List<FavouriteArtwork>, navController: NavController,
+                  onItemClick: (Int) -> Unit) {
+    println("Favourite data retrieved: $favouriteArtworks")
     Surface(color = MaterialTheme.colorScheme.surface) {
         Column (modifier = Modifier
             .fillMaxWidth()
@@ -80,7 +88,7 @@ fun UserFavourite(favouriteArtworks: List<FavouriteArtwork>) {
             )
             LazyColumn {
                 itemsIndexed(favouriteArtworks) { index, artwork ->
-                    FavouriteArtworkItem(artwork, index + 1)
+                    FavouriteArtworkItem(artwork, index + 1, navController, onItemClick)
                 }
             }
 
@@ -90,27 +98,35 @@ fun UserFavourite(favouriteArtworks: List<FavouriteArtwork>) {
 }
 
 @Composable
-fun FavouriteArtworkItem(artwork: FavouriteArtwork, index: Int) {
+fun FavouriteArtworkItem(artwork: FavouriteArtwork, index: Int, navController: NavController,
+                         onClick: (Int) -> Unit) {
+
     Card(
         //elevation = 4.dp,
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
+            .clickable { onClick(artwork.artworkId?.toInt() ?: 0) }
+            .clickable {
+                navController.navigate("imageDetails/${artwork.artworkId}")
+            }
     ) {
-        Column(
+        Row(
             modifier = Modifier
                 .padding(16.dp)
                 .fillMaxWidth()
         ) {
             Text(
-                text = "Artwork: $index",
+                text = "$index: ",
                 fontSize = 16.sp,
+                fontFamily = FontFamily.Serif,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(bottom = 4.dp)
             )
             Text(
                 text = artwork.title.toString(),
                 fontSize = 14.sp,
+                fontFamily = FontFamily.Cursive,
                 modifier = Modifier.padding(bottom = 4.dp)
             )
         }
