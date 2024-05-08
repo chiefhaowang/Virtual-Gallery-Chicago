@@ -23,10 +23,10 @@ class CloudInterface {
     }
 
 
-    // User Data Streaming
-    // Comment to Garfield: function for user registration
-    // Use case: Every user registration will call this function
-    // Functionality: Simply build a new user row with email
+    /** User Data Streaming
+     function for user registration
+     Use case: Every user registration will call this function
+     Functionality: Simply build a new user row with email*/
     fun initializeUser( email: String ){
         val favouriteArtworks: MutableList<FavouriteArtwork> = mutableListOf()
         val likedArtworks: MutableList<LikedArtwork> = mutableListOf()
@@ -41,9 +41,9 @@ class CloudInterface {
             }
     }
 
-    // Comment to Garfield: function for user google login
+    /**function for user google login
     // Use case: Every user google login will call this function
-    // Functionality: check the email has been used then decide to create a user or not
+    // Functionality: check the email has been used then decide to create a user or not*/
     fun initializeUserGoogleLogin(email: String, callback: (User?) -> Unit){
         database.child("users").child(userIdGenerator(email)).get()
             .addOnSuccessListener { it ->
@@ -230,11 +230,11 @@ class CloudInterface {
             }
     }
 
-    // Callback function: return likesAmount at present
-    // Comment to Chenglong, use this to read the likes amount data by artwork id. When you use the function, it would be like this:
-    //        firebaseConnection.readArtworkLikes(artworkId){
-    //            println(it) // "it" is the return value of readArtworkLikes
-    //        }
+    /** Callback function: return likesAmount at present
+     use this to read the likes amount data by artwork id. When you use the function, it would be like this:
+            firebaseConnection.readArtworkLikes(artworkId){
+               println(it) // "it" is the return value of readArtworkLikes
+            }*/
     fun readArtworkLikes(artworksId: String, callback: (Int) -> Unit) {
         database.child("likesAmount").child(artworksId).get()
             .addOnSuccessListener { it ->
