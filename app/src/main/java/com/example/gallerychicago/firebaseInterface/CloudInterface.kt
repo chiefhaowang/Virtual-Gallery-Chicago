@@ -91,40 +91,114 @@ class CloudInterface {
 
     // Favourite artworks changes data streaming
     fun addFavouriteArtworkUser(email: String, favouriteArtwork: FavouriteArtwork){
-
+        readUserInfo(email){
+            var user = User()
+            var favouriteArtworks: MutableList<FavouriteArtwork> = mutableListOf()
+            if (it != null) {
+                println(it.favouriteArtworks)
+                favouriteArtworks = it.favouriteArtworks as MutableList<FavouriteArtwork>
+            }
+            favouriteArtworks.add(favouriteArtwork)
+            if (it != null) {
+                user = User(userIdGenerator(email),favouriteArtworks, it.likedArtworks)
+            }
+            if (it != null) {
+                writeUserInfo(it.email.toString(), user)
+            }
+        }
     }
 
     fun cancelFavouriteArtworkUser(email: String, artworkId: Int){
-
+        readUserInfo(email){
+            var user = User()
+            var favouriteArtworks: MutableList<FavouriteArtwork> = mutableListOf()
+            if (it != null) {
+                println(it.favouriteArtworks)
+                favouriteArtworks = it.favouriteArtworks as MutableList<FavouriteArtwork>
+            }
+            // Delete the artwork record
+            val iterator = favouriteArtworks.iterator()
+            while (iterator.hasNext()) {
+                val artwork = iterator.next()
+                if (artwork.artworkId == artworkId) {
+                    iterator.remove()
+                    break
+                }
+            }
+            if (it != null) {
+                user = User(userIdGenerator(email),favouriteArtworks, it.likedArtworks)
+            }
+            if (it != null) {
+                writeUserInfo(it.email.toString(), user)
+            }
+        }
     }
 
     // liked artworks data in user object
     // Not completed
-    fun addLikedArtworkUser(email: String, artworkId: String){
+    fun addLikedArtworkUser(email: String, artworkId: Int){
+        readUserInfo(email){
+            var user = User()
+            val likedArtwork = LikedArtwork(artworkId)
+            var likedArtworks: MutableList<LikedArtwork> = mutableListOf()
+            if (it != null) {
+                println(it.likedArtworks)
+                likedArtworks = it.likedArtworks as MutableList<LikedArtwork>
+            }
 
+            likedArtworks.add(likedArtwork)
+            if (it != null) {
+                user = User(userIdGenerator(email),it.favouriteArtworks, likedArtworks)
+            }
+            if (it != null) {
+                writeUserInfo(it.email.toString(), user)
+            }
+        }
     }
 
-    fun cancelLikedArtworkUser(email: String, artworkId: String){
+    fun cancelLikedArtworkUser(email: String, artworkId: Int){
+        readUserInfo(email){
+            var user = User()
 
+            var likedArtworks: MutableList<LikedArtwork> = mutableListOf()
+            if (it != null) {
+                println(it.likedArtworks)
+                likedArtworks = it.likedArtworks as MutableList<LikedArtwork>
+            }
+            val iterator = likedArtworks.iterator()
+            while (iterator.hasNext()) {
+                val artwork = iterator.next()
+                if (artwork.artworkId == artworkId) {
+                    iterator.remove()
+                    break
+                }
+            }
+            if (it != null) {
+                user = User(userIdGenerator(email),it.favouriteArtworks, likedArtworks)
+            }
+            if (it != null) {
+                writeUserInfo(it.email.toString(), user)
+            }
+        }
     }
 
 
 
     // all changes happened while add or cancel likes (user object change and likes amount change)
-    fun addArtworkLikeCloud(userId: String, artworkId: String){
+    fun addArtworkLikeCloud(userId: String, artworkId: Int){
         // Add liked artwork like in user object
         addLikedArtworkUser(userId, artworkId)
 
         // Change the entire user likes data
-        readArtworkLikes(artworkId) {
+        readArtworkLikes(artworkId.toString()) {
             val likesAmount = it + 1
             println("Likes amount at present: $likesAmount")
-            writeArtworkLikes(artworkId, likesAmount)
+            writeArtworkLikes(artworkId.toString(), likesAmount)
         }
 
     }
 
-    fun cancelArtworkLikeCloud(email: String, artworkId: String){
+    fun cancelArtworkLikeCloud(email: String, artworkId: Int){
 
         // Add liked artwork like in user object
         cancelLikedArtworkUser(email, artworkId)
@@ -133,7 +207,7 @@ class CloudInterface {
         readArtworkLikes("artwork-one") {
             val likesAmount = it - 1
             println("Likes amount at present: $likesAmount")
-            writeArtworkLikes(artworkId, likesAmount)
+            writeArtworkLikes(artworkId.toString(), likesAmount)
         }
     }
 
