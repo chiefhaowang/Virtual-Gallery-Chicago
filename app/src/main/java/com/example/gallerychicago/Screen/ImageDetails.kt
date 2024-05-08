@@ -57,7 +57,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 
-// Enterence func: waiting for the data fetch operation done then display the data out
+// Enterence func: Async waiting for the data fetch operation done then display the data out
 @Composable
 fun DisplayArtworkDetails(artworkId: Int, navController: NavHostController) {
     var artworkDetails by remember { mutableStateOf<ArtworkDetailsResponse?>(null) }
