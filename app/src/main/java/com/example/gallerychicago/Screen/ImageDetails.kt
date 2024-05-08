@@ -38,6 +38,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.gallerychicago.Data.ArtworkDetailsResponse
@@ -58,49 +59,62 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 // Enterence func: waiting for the data fetch operation done then display the data out
 @Composable
-fun DisplayArtworkDetails(artworkId: Int) {
+fun DisplayArtworkDetails(artworkId: Int, navController: NavHostController) {
     var artworkDetails by remember { mutableStateOf<ArtworkDetailsResponse?>(null) }
     val cloudInterface = CloudInterface()
     cloudInterface.initializaDbRef()
 
-    //User email retrieving
-    val email = "wh.tenghe@gmail.com"
-    var user = User()
-    LaunchedEffect(Unit) {
-        cloudInterface.readUserInfo(email){
-            if (it != null) {
-                user = User(email,it.favouriteArtworks, it.likedArtworks)
+    Surface(color = MaterialTheme.colorScheme.surface, modifier = Modifier.fillMaxSize()) {
+        Column(modifier = Modifier.fillMaxSize()) {
+            Text(
+                text = "Artwork Details",
+                color = MaterialTheme.colorScheme.onPrimary,
+                style = MaterialTheme.typography.headlineLarge,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(color = MaterialTheme.colorScheme.primary)
+            )
+            // Fetching data and display logic
+            val email = "wh.tenghe@gmail.com"
+            var user = User()
+            LaunchedEffect(Unit) {
+                cloudInterface.readUserInfo(email) {
+                    if (it != null) {
+                        user = User(email, it.favouriteArtworks, it.likedArtworks)
+                    } else {
+                        println("The user info on cloud is null")
+                    }
+                }
             }
-            else{
-                println("The user info on cloud is null")
-            }
-        }
-    }
 
-    //retrieving art data form API
-    println("Receive image ID from other pages: $artworkId")
-    LaunchedEffect(Unit) {
-        fetchArtworkDetails(artworkId) {
-            if (it != null) {
-                artworkDetails = it
-                println("API Response: $artworkDetails")
+            println("Receive image ID from other pages: $artworkId")
+            LaunchedEffect(Unit) {
+                fetchArtworkDetails(artworkId) {
+                    if (it != null) {
+                        artworkDetails = it
+                        println("API Response: $artworkDetails")
+                    } else {
+                        println("Got a null json reply")
+                    }
+                }
             }
-            else{
-                println("Got a null json reply")
+
+            if (artworkDetails != null && user != null) {
+                println("Artwork Details page can be called")
+                ArtworkDetials(artworkDetails!!, email)
+            } else {
+                Text("")
             }
         }
-    }
-    if (artworkDetails != null && user != null) {
-        println("Artwork Details page can be called")
-        ArtworkDetials(artworkDetails!!, email)
-    } else {
-        println("")
     }
 }
+
 
 @Composable
 fun ArtworkDetials(artworkDetails: ArtworkDetailsResponse, email: String) {
     println("Artwork Details page has been called")
+
 
     //Cloud service
     val cloudInterface = CloudInterface()
@@ -133,16 +147,6 @@ fun ArtworkDetials(artworkDetails: ArtworkDetailsResponse, email: String) {
         Column(
             modifier = Modifier.fillMaxWidth().fillMaxHeight()
         ) {
-
-            Text(
-                text = "Artwork Details",
-                color = MaterialTheme.colorScheme.onPrimary,
-                style = MaterialTheme.typography.headlineLarge,
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(color = MaterialTheme.colorScheme.primary)
-            )
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
