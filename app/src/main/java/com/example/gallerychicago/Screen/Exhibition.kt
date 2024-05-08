@@ -43,7 +43,7 @@ fun Exhibition(navController: NavHostController, viewModel: ArtworkViewModel) {
         ) {
             // Display the exhibition title
             Text(
-                text = "Exhibition",
+                text = "Artworks",
                 color = MaterialTheme.colorScheme.onPrimary,
                 style = MaterialTheme.typography.headlineLarge,
                 textAlign = TextAlign.Center,
