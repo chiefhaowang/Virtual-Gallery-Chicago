@@ -11,6 +11,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.outlined.AddCircle
+
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -73,6 +81,19 @@ fun DisplayArtworkDetails(artworkId: Int) {
 @Composable
 fun ArtworkDetials(artworkDetails: ArtworkDetailsResponse) {
     println("Artwork Details page has been called")
+    var isLikedClicked by remember { mutableStateOf(false) }
+    var isFavouriteClicked by remember { mutableStateOf(false) }
+    val iconlikes = if (isLikedClicked) {
+        Icons.Filled.Favorite
+    } else {
+        Icons.Filled.FavoriteBorder
+    }
+    val iconfavourite = if ( isFavouriteClicked) {
+        Icons.Filled.Star
+    } else {
+        Icons.Outlined.AddCircle
+    }
+
     Surface(color = MaterialTheme.colorScheme.surface) {
         Column(
             modifier = Modifier.fillMaxWidth().fillMaxHeight()
@@ -105,7 +126,7 @@ fun ArtworkDetials(artworkDetails: ArtworkDetailsResponse) {
                 fontFamily = FontFamily.Cursive,
                 color = Color.Black,
                 style = MaterialTheme.typography.titleLarge,
-                modifier = Modifier.padding(10.dp, 0.dp)
+                modifier = Modifier.padding(20.dp, 0.dp)
             )
 
             Row(
@@ -120,20 +141,25 @@ fun ArtworkDetials(artworkDetails: ArtworkDetailsResponse) {
                     color = Color.Gray,
                     fontFamily = FontFamily.Serif
                 )
-                Image(
-                    painter = painterResource(id = R.drawable.icon_favourite),
-                    contentDescription = "icon-favourite",
+
+                IconButton(
+                    onClick = { isLikedClicked = !isLikedClicked },
                     modifier = Modifier
-                        .padding(start = 150.dp, end = 10.dp, top = 10.dp)
-                        .size(20.dp)
-                )
-                Image(
-                    painter = painterResource(id = R.drawable.icon_like),
-                    contentDescription = "icon-favourite",
+                        .padding(start = 180.dp, end = 10.dp, top = 10.dp)
+                        .size(30.dp)
+                ) {
+                    Icon(iconlikes, contentDescription = "Like")
+                }
+
+                IconButton(
+                    onClick = { isFavouriteClicked = !isFavouriteClicked },
                     modifier = Modifier
                         .padding(start = 10.dp, end = 0.dp, top = 10.dp)
-                        .size(20.dp)
-                )
+                        .size(30.dp)
+                ) {
+                    Icon(iconfavourite, contentDescription = "Favourite")
+                }
+
             }
 
             Text(
