@@ -11,6 +11,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.outlined.AddCircle
+
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -35,6 +43,10 @@ import coil.request.ImageRequest
 import com.example.gallerychicago.Data.ArtworkDetailsResponse
 import com.example.gallerychicago.Data.ArtworkDetailsService
 import com.example.gallerychicago.R
+import com.example.gallerychicago.firebaseInterface.CloudInterface
+import com.example.gallerychicago.firebaseInterface.FavouriteArtwork
+import com.example.gallerychicago.firebaseInterface.LikedArtwork
+import com.example.gallerychicago.firebaseInterface.User
 import com.google.gson.JsonElement
 import com.google.gson.JsonParser
 import retrofit2.Call
@@ -48,11 +60,27 @@ import retrofit2.converter.gson.GsonConverterFactory
 @Composable
 fun DisplayArtworkDetails(artworkId: Int) {
     var artworkDetails by remember { mutableStateOf<ArtworkDetailsResponse?>(null) }
+    val cloudInterface = CloudInterface()
+    cloudInterface.initializaDbRef()
+
+    //User email retrieving
+    val email = "wh.tenghe@gmail.com"
+    var user = User()
+    LaunchedEffect(Unit) {
+        cloudInterface.readUserInfo(email){
+            if (it != null) {
+                user = User(email,it.favouriteArtworks, it.likedArtworks)
+            }
+            else{
+                println("The user info on cloud is null")
+            }
+        }
+    }
+
+    //retrieving art data form API
     println("Receive image ID from other pages: $artworkId")
     LaunchedEffect(Unit) {
-        println("1")
         fetchArtworkDetails(artworkId) {
-            println("2")
             if (it != null) {
                 artworkDetails = it
                 println("API Response: $artworkDetails")
@@ -62,17 +90,45 @@ fun DisplayArtworkDetails(artworkId: Int) {
             }
         }
     }
-    if (artworkDetails != null) {
+    if (artworkDetails != null && user != null) {
         println("Artwork Details page can be called")
-        ArtworkDetials(artworkDetails!!)
+        ArtworkDetials(artworkDetails!!, email)
     } else {
         println("")
     }
 }
 
 @Composable
-fun ArtworkDetials(artworkDetails: ArtworkDetailsResponse) {
+fun ArtworkDetials(artworkDetails: ArtworkDetailsResponse, email: String) {
     println("Artwork Details page has been called")
+
+    //Cloud service
+    val cloudInterface = CloudInterface()
+    cloudInterface.initializaDbRef()
+    val likedArtwork = LikedArtwork(artworkId = artworkDetails.id)
+    val favouriteArtwork = FavouriteArtwork(
+        artworkId = artworkDetails.id,
+        title = artworkDetails.title,
+        type = artworkDetails.typeId
+    )
+
+    println("$email's art likes data has been given")
+    //Icon tap event setting
+    var isLikedClicked by remember { mutableStateOf(false) }
+    var isFavouriteClicked by remember { mutableStateOf(false) }
+
+    val iconlikes = if (isLikedClicked) {
+        Icons.Filled.Favorite
+    } else {
+        Icons.Filled.FavoriteBorder
+    }
+
+    val iconfavourite = if ( isFavouriteClicked) {
+        Icons.Filled.Star
+    } else {
+        Icons.Outlined.AddCircle
+    }
+
     Surface(color = MaterialTheme.colorScheme.surface) {
         Column(
             modifier = Modifier.fillMaxWidth().fillMaxHeight()
@@ -105,7 +161,7 @@ fun ArtworkDetials(artworkDetails: ArtworkDetailsResponse) {
                 fontFamily = FontFamily.Cursive,
                 color = Color.Black,
                 style = MaterialTheme.typography.titleLarge,
-                modifier = Modifier.padding(10.dp, 0.dp)
+                modifier = Modifier.padding(20.dp, 0.dp)
             )
 
             Row(
@@ -120,20 +176,41 @@ fun ArtworkDetials(artworkDetails: ArtworkDetailsResponse) {
                     color = Color.Gray,
                     fontFamily = FontFamily.Serif
                 )
-                Image(
-                    painter = painterResource(id = R.drawable.icon_favourite),
-                    contentDescription = "icon-favourite",
+
+                IconButton(
+                    onClick = {
+                        if(isLikedClicked){
+                            artworkDetails.id?.let { cloudInterface.cancelLikedArtworkUser(email.toString(), it.toInt()) }
+                        }
+                        else{
+                            artworkDetails.id?.let { cloudInterface.addLikedArtworkUser(email.toString(), it.toInt()) }
+                        }
+                        isLikedClicked = !isLikedClicked
+                              },
                     modifier = Modifier
-                        .padding(start = 150.dp, end = 10.dp, top = 10.dp)
-                        .size(20.dp)
-                )
-                Image(
-                    painter = painterResource(id = R.drawable.icon_like),
-                    contentDescription = "icon-favourite",
+                        .padding(start = 180.dp, end = 10.dp, top = 10.dp)
+                        .size(30.dp)
+                ) {
+                    Icon(iconlikes, contentDescription = "Like")
+                }
+
+                IconButton(
+                    onClick = {
+                        if(isFavouriteClicked){
+                            artworkDetails.id?.let { cloudInterface.cancelFavouriteArtworkUser(email.toString(), artworkId = it.toInt()) }
+                        }
+                        else{
+                            cloudInterface.addFavouriteArtworkUser(email = email.toString(),favouriteArtwork)
+                        }
+                        isFavouriteClicked = !isFavouriteClicked
+                              },
                     modifier = Modifier
                         .padding(start = 10.dp, end = 0.dp, top = 10.dp)
-                        .size(20.dp)
-                )
+                        .size(30.dp)
+                ) {
+                    Icon(iconfavourite, contentDescription = "Favourite")
+                }
+
             }
 
             Text(
@@ -192,36 +269,19 @@ fun fetchArtworkDetails(artworkId: Int, callback: (ArtworkDetailsResponse?) -> U
         })
 }
 
-// Convert the response json to object
-//fun parseArtworkDetails(jsonResponse: String?): ArtworkDetailsResponse? {
-//    if (jsonResponse == null){
-//        println("Have got a empty json pack")
-//        return null}
-//
-//    val jsonObject = JsonParser.parseString(jsonResponse).asJsonObject
-//    println("JSON object is(After parsering): $jsonObject")
-//    val data = jsonObject.getAsJsonArray("data")
-//    if (data.size() > 0) {
-//        val artworkData = data[0].asJsonObject
-//        println("Finalised JSON is: $artworkData")
-//        val artworkDetailsResponse = ArtworkDetailsResponse(
-//            artworkData.get("id")?.asInt ?: 27992,
-//            artworkData.get("title")?.asString ?: "",
-//            artworkData.get("short_description")?.asString ?: "",
-//            artworkData.get("artist_title")?.asString ?: "",
-//            artworkData.get("artwork_type_id")?.asInt ?: 0,
-//            artworkData.get("image_id")?.asString ?: ""
-//            )
-//        println("The returned object is $artworkDetailsResponse")
-//
-//        return artworkDetailsResponse
-//    }
-//
-//    return null
-//}
 
 fun parseArtworkDetails(jsonResponse: String?): ArtworkDetailsResponse? {
+
+    var id = 27992
+    var title = "Title not Found"
+    var shortDescription = "Description not Found"
+    var artistTitle = "Artist not Found"
+    var artworkTypeId = 0
+    var imageId = "2d484387-2509-5e8e-2c43-22f9981972eb"
+
     try {
+
+
         if (jsonResponse.isNullOrEmpty()) {
             println("JSON response is empty or null")
             return null
@@ -231,12 +291,12 @@ fun parseArtworkDetails(jsonResponse: String?): ArtworkDetailsResponse? {
         val data = jsonObject.getAsJsonArray("data")
         if (data.size() > 0) {
             val artworkData = data[0].asJsonObject
-            val id = artworkData.get("id")?.asInt ?: return null
-            val title = artworkData.get("title")?.asString ?: ""
-            val shortDescription = artworkData.get("short_description")?.asString ?: ""
-            val artistTitle = artworkData.get("artist_title")?.asString ?: ""
-            val artworkTypeId = artworkData.get("artwork_type_id")?.asInt ?: 0
-            val imageId = artworkData.get("image_id")?.asString ?: ""
+            id = artworkData.get("id")?.asInt ?: 27992
+            title = artworkData.get("title")?.asString ?: "Title not Found"
+            shortDescription = artworkData.get("short_description")?.asString ?: "Description not Found"
+            artistTitle = artworkData.get("artist_title")?.asString ?: "Artist not Found"
+            artworkTypeId = artworkData.get("artwork_type_id")?.asInt ?: 0
+            imageId = artworkData.get("image_id")?.asString ?: "2d484387-2509-5e8e-2c43-22f9981972eb"
 
             println("Parsed ArtworkDetailsResponse: { id=$id, title='$title', shortDescription='$shortDescription', artistTitle='$artistTitle', artworkTypeId=$artworkTypeId, imageId='$imageId' }")
 
@@ -246,6 +306,7 @@ fun parseArtworkDetails(jsonResponse: String?): ArtworkDetailsResponse? {
         }
     } catch (e: Exception) {
         println("Error parsing JSON: ${e.message}")
+        return ArtworkDetailsResponse(id, title, shortDescription, artistTitle, artworkTypeId, imageId)
     }
 
     return null
