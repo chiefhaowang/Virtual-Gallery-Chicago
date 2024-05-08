@@ -271,7 +271,17 @@ fun fetchArtworkDetails(artworkId: Int, callback: (ArtworkDetailsResponse?) -> U
 
 
 fun parseArtworkDetails(jsonResponse: String?): ArtworkDetailsResponse? {
+
+    var id = 27992
+    var title = "Title not Found"
+    var shortDescription = "Description not Found"
+    var artistTitle = "Artist not Found"
+    var artworkTypeId = 0
+    var imageId = "2d484387-2509-5e8e-2c43-22f9981972eb"
+
     try {
+
+
         if (jsonResponse.isNullOrEmpty()) {
             println("JSON response is empty or null")
             return null
@@ -281,12 +291,12 @@ fun parseArtworkDetails(jsonResponse: String?): ArtworkDetailsResponse? {
         val data = jsonObject.getAsJsonArray("data")
         if (data.size() > 0) {
             val artworkData = data[0].asJsonObject
-            val id = artworkData.get("id")?.asInt ?: return null
-            val title = artworkData.get("title")?.asString ?: ""
-            val shortDescription = artworkData.get("short_description")?.asString ?: ""
-            val artistTitle = artworkData.get("artist_title")?.asString ?: ""
-            val artworkTypeId = artworkData.get("artwork_type_id")?.asInt ?: 0
-            val imageId = artworkData.get("image_id")?.asString ?: ""
+            id = artworkData.get("id")?.asInt ?: 27992
+            title = artworkData.get("title")?.asString ?: "Title not Found"
+            shortDescription = artworkData.get("short_description")?.asString ?: "Description not Found"
+            artistTitle = artworkData.get("artist_title")?.asString ?: "Artist not Found"
+            artworkTypeId = artworkData.get("artwork_type_id")?.asInt ?: 0
+            imageId = artworkData.get("image_id")?.asString ?: "2d484387-2509-5e8e-2c43-22f9981972eb"
 
             println("Parsed ArtworkDetailsResponse: { id=$id, title='$title', shortDescription='$shortDescription', artistTitle='$artistTitle', artworkTypeId=$artworkTypeId, imageId='$imageId' }")
 
@@ -296,6 +306,7 @@ fun parseArtworkDetails(jsonResponse: String?): ArtworkDetailsResponse? {
         }
     } catch (e: Exception) {
         println("Error parsing JSON: ${e.message}")
+        return ArtworkDetailsResponse(id, title, shortDescription, artistTitle, artworkTypeId, imageId)
     }
 
     return null
