@@ -104,6 +104,7 @@ class CloudInterface {
             }
             if (it != null) {
                 writeUserInfo(it.email.toString(), user)
+                println("User favourite artwork ahs been added in cloud")
             }
         }
     }
@@ -130,6 +131,7 @@ class CloudInterface {
             }
             if (it != null) {
                 writeUserInfo(it.email.toString(), user)
+                println("User favourite artwork ahs been deleted in cloud")
             }
         }
     }
@@ -152,6 +154,7 @@ class CloudInterface {
             }
             if (it != null) {
                 writeUserInfo(it.email.toString(), user)
+                println("User likes data has been added into cloud")
             }
         }
     }
@@ -178,6 +181,7 @@ class CloudInterface {
             }
             if (it != null) {
                 writeUserInfo(it.email.toString(), user)
+                println("User likes data has been deleted from cloud")
             }
         }
     }
