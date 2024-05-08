@@ -5,7 +5,7 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.compose.rememberNavController
+import androidx.navigation.NavHostController
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -192,7 +192,9 @@ class ArtworkViewModel(application: Application) : AndroidViewModel(application)
      * Handle click event on artwork image.
      * @param imageId The ID of the clicked artwork image.
      */
-    fun onImageClick(imageId: Int) {
+
+    fun onImageClick(imageId: Int, navController: NavHostController) {
         Log.i("ImageClicked", "Image ID: $imageId")
+        navController.navigate("imageDetails/$imageId")
     }
 }

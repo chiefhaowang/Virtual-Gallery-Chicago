@@ -9,7 +9,7 @@ data class ArtworkResponse(
 )
 
 // Retrieving data for details
-data class ArtworkDetails(
+data class ArtworkDetailsResponse(
     val id: Int? = 0,
     val title: String? = "",
     val description: String? = "",

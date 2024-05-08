@@ -16,6 +16,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.compose.material3.MaterialTheme
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
 import com.example.gallerychicago.Data.ArtworkViewModel
 
 
@@ -56,6 +58,7 @@ fun BottomNavigationBar(viewModel: ArtworkViewModel) {
         NavHost(
             navController,
             startDestination = Routes.Home.value,
+            //startDestination = "FavouriteList",
             Modifier.padding(paddingValues)
         ) {
             composable(Routes.Home.value) {
@@ -72,6 +75,27 @@ fun BottomNavigationBar(viewModel: ArtworkViewModel) {
             {
                 UserProfile(navController)
             }
+            // Jump between pages
+            composable("FavouriteList")
+            {
+                DisplayFavouriteList(navController)
+            }
+            composable(
+                "imageDetails/{imageId}",
+                arguments = listOf(navArgument("imageId") { type = NavType.IntType })
+            ) { backStackEntry ->
+                val imageId = backStackEntry.arguments?.getInt("imageId") ?: 0
+                DisplayArtworkDetails(imageId)
+            }
+//            composable(
+//                "imageDetails/{imageId}",
+//                arguments = listOf(navArgument("imageId") { type = NavType.IntType })
+//            ) { backStackEntry ->
+//                val imageId = backStackEntry.arguments?.getInt("imageId") ?: 27992
+//                println("Image ID in navigation is $imageId")
+//                DisplayArtworkDetails(imageId)
+//            }
+
         }
     }
 }

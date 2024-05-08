@@ -189,7 +189,10 @@ fun UserProfile(navController: NavHostController)
         }
         DescriptionOfUser()
         Spacer(modifier = Modifier.height(50.dp))
-        Button(onClick = { },
+        Button(
+            onClick = {
+                println("Button clicked!")
+                navController.navigate("FavouriteList") },
             colors = ButtonDefaults.buttonColors(Color(0xFF952323)))
         {
             Text("Go to my favorite list")
@@ -235,7 +238,10 @@ fun DescriptionOfUser() {
                     .weight(1f)
                     .padding(start = 10.dp, end = 15.dp)
             )
-            Button(onClick = { },
+            Button(
+                onClick = {
+
+                },
                 colors = ButtonDefaults.buttonColors(Color(0xFF952323)))
             {
                 Text("Edit")
