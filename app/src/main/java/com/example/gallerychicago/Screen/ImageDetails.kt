@@ -43,6 +43,10 @@ import coil.request.ImageRequest
 import com.example.gallerychicago.Data.ArtworkDetailsResponse
 import com.example.gallerychicago.Data.ArtworkDetailsService
 import com.example.gallerychicago.R
+import com.example.gallerychicago.firebaseInterface.CloudInterface
+import com.example.gallerychicago.firebaseInterface.FavouriteArtwork
+import com.example.gallerychicago.firebaseInterface.LikedArtwork
+import com.example.gallerychicago.firebaseInterface.User
 import com.google.gson.JsonElement
 import com.google.gson.JsonParser
 import retrofit2.Call
@@ -56,11 +60,24 @@ import retrofit2.converter.gson.GsonConverterFactory
 @Composable
 fun DisplayArtworkDetails(artworkId: Int) {
     var artworkDetails by remember { mutableStateOf<ArtworkDetailsResponse?>(null) }
+    val cloudInterface = CloudInterface()
+    cloudInterface.initializaDbRef()
+
+    //User email retrieving
+    val email = "wh.tenghe@gmail.com"
+    var user = User()
+    LaunchedEffect(Unit) {
+        cloudInterface.readUserInfo(email){
+            if (it != null) {
+                user = User(email,it.favouriteArtworks, it.likedArtworks)
+            }
+        }
+    }
+
+    //retrieving art data form API
     println("Receive image ID from other pages: $artworkId")
     LaunchedEffect(Unit) {
-        println("1")
         fetchArtworkDetails(artworkId) {
-            println("2")
             if (it != null) {
                 artworkDetails = it
                 println("API Response: $artworkDetails")
@@ -72,22 +89,37 @@ fun DisplayArtworkDetails(artworkId: Int) {
     }
     if (artworkDetails != null) {
         println("Artwork Details page can be called")
-        ArtworkDetials(artworkDetails!!)
+        ArtworkDetials(artworkDetails!!, user)
     } else {
         println("")
     }
 }
 
 @Composable
-fun ArtworkDetials(artworkDetails: ArtworkDetailsResponse) {
+fun ArtworkDetials(artworkDetails: ArtworkDetailsResponse, user: User) {
     println("Artwork Details page has been called")
+
+    //Cloud service
+    val cloudInterface = CloudInterface()
+    cloudInterface.initializaDbRef()
+    val likedArtwork = LikedArtwork(artworkId = artworkDetails.id)
+    val favouriteArtwork = FavouriteArtwork(
+        artworkId = artworkDetails.id,
+        title = artworkDetails.title,
+        type = artworkDetails.typeId
+    )
+
+    println("${user.email}'s art likes data has been given")
+    //Icon tap event setting
     var isLikedClicked by remember { mutableStateOf(false) }
     var isFavouriteClicked by remember { mutableStateOf(false) }
+
     val iconlikes = if (isLikedClicked) {
         Icons.Filled.Favorite
     } else {
         Icons.Filled.FavoriteBorder
     }
+
     val iconfavourite = if ( isFavouriteClicked) {
         Icons.Filled.Star
     } else {
@@ -143,7 +175,15 @@ fun ArtworkDetials(artworkDetails: ArtworkDetailsResponse) {
                 )
 
                 IconButton(
-                    onClick = { isLikedClicked = !isLikedClicked },
+                    onClick = {
+                        if(isLikedClicked){
+                            artworkDetails.id?.let { cloudInterface.cancelLikedArtworkUser(user.email.toString(), it.toInt()) }
+                        }
+                        else{
+                            artworkDetails.id?.let { cloudInterface.addLikedArtworkUser(user.email.toString(), it.toInt()) }
+                        }
+                        isLikedClicked = !isLikedClicked
+                              },
                     modifier = Modifier
                         .padding(start = 180.dp, end = 10.dp, top = 10.dp)
                         .size(30.dp)
@@ -152,7 +192,15 @@ fun ArtworkDetials(artworkDetails: ArtworkDetailsResponse) {
                 }
 
                 IconButton(
-                    onClick = { isFavouriteClicked = !isFavouriteClicked },
+                    onClick = {
+                        if(isFavouriteClicked){
+                            artworkDetails.id?.let { cloudInterface.cancelFavouriteArtworkUser(user.email.toString(), artworkId = it.toInt()) }
+                        }
+                        else{
+                            cloudInterface.addFavouriteArtworkUser(email = user.email.toString(),favouriteArtwork)
+                        }
+                        isFavouriteClicked = !isFavouriteClicked
+                              },
                     modifier = Modifier
                         .padding(start = 10.dp, end = 0.dp, top = 10.dp)
                         .size(30.dp)
@@ -218,33 +266,6 @@ fun fetchArtworkDetails(artworkId: Int, callback: (ArtworkDetailsResponse?) -> U
         })
 }
 
-// Convert the response json to object
-//fun parseArtworkDetails(jsonResponse: String?): ArtworkDetailsResponse? {
-//    if (jsonResponse == null){
-//        println("Have got a empty json pack")
-//        return null}
-//
-//    val jsonObject = JsonParser.parseString(jsonResponse).asJsonObject
-//    println("JSON object is(After parsering): $jsonObject")
-//    val data = jsonObject.getAsJsonArray("data")
-//    if (data.size() > 0) {
-//        val artworkData = data[0].asJsonObject
-//        println("Finalised JSON is: $artworkData")
-//        val artworkDetailsResponse = ArtworkDetailsResponse(
-//            artworkData.get("id")?.asInt ?: 27992,
-//            artworkData.get("title")?.asString ?: "",
-//            artworkData.get("short_description")?.asString ?: "",
-//            artworkData.get("artist_title")?.asString ?: "",
-//            artworkData.get("artwork_type_id")?.asInt ?: 0,
-//            artworkData.get("image_id")?.asString ?: ""
-//            )
-//        println("The returned object is $artworkDetailsResponse")
-//
-//        return artworkDetailsResponse
-//    }
-//
-//    return null
-//}
 
 fun parseArtworkDetails(jsonResponse: String?): ArtworkDetailsResponse? {
     try {
