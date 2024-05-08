@@ -71,6 +71,9 @@ fun DisplayArtworkDetails(artworkId: Int) {
             if (it != null) {
                 user = User(email,it.favouriteArtworks, it.likedArtworks)
             }
+            else{
+                println("The user info on cloud is null")
+            }
         }
     }
 
@@ -87,16 +90,16 @@ fun DisplayArtworkDetails(artworkId: Int) {
             }
         }
     }
-    if (artworkDetails != null) {
+    if (artworkDetails != null && user != null) {
         println("Artwork Details page can be called")
-        ArtworkDetials(artworkDetails!!, user)
+        ArtworkDetials(artworkDetails!!, email)
     } else {
         println("")
     }
 }
 
 @Composable
-fun ArtworkDetials(artworkDetails: ArtworkDetailsResponse, user: User) {
+fun ArtworkDetials(artworkDetails: ArtworkDetailsResponse, email: String) {
     println("Artwork Details page has been called")
 
     //Cloud service
@@ -109,7 +112,7 @@ fun ArtworkDetials(artworkDetails: ArtworkDetailsResponse, user: User) {
         type = artworkDetails.typeId
     )
 
-    println("${user.email}'s art likes data has been given")
+    println("$email's art likes data has been given")
     //Icon tap event setting
     var isLikedClicked by remember { mutableStateOf(false) }
     var isFavouriteClicked by remember { mutableStateOf(false) }
@@ -177,10 +180,10 @@ fun ArtworkDetials(artworkDetails: ArtworkDetailsResponse, user: User) {
                 IconButton(
                     onClick = {
                         if(isLikedClicked){
-                            artworkDetails.id?.let { cloudInterface.cancelLikedArtworkUser(user.email.toString(), it.toInt()) }
+                            artworkDetails.id?.let { cloudInterface.cancelLikedArtworkUser(email.toString(), it.toInt()) }
                         }
                         else{
-                            artworkDetails.id?.let { cloudInterface.addLikedArtworkUser(user.email.toString(), it.toInt()) }
+                            artworkDetails.id?.let { cloudInterface.addLikedArtworkUser(email.toString(), it.toInt()) }
                         }
                         isLikedClicked = !isLikedClicked
                               },
@@ -194,10 +197,10 @@ fun ArtworkDetials(artworkDetails: ArtworkDetailsResponse, user: User) {
                 IconButton(
                     onClick = {
                         if(isFavouriteClicked){
-                            artworkDetails.id?.let { cloudInterface.cancelFavouriteArtworkUser(user.email.toString(), artworkId = it.toInt()) }
+                            artworkDetails.id?.let { cloudInterface.cancelFavouriteArtworkUser(email.toString(), artworkId = it.toInt()) }
                         }
                         else{
-                            cloudInterface.addFavouriteArtworkUser(email = user.email.toString(),favouriteArtwork)
+                            cloudInterface.addFavouriteArtworkUser(email = email.toString(),favouriteArtwork)
                         }
                         isFavouriteClicked = !isFavouriteClicked
                               },
