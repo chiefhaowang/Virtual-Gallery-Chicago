@@ -55,8 +55,8 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 )
                 {
-                    //BottomNavigationBar(viewModel = artworkViewModel, userViewModel =userViewModel )
-                    ReportScreen(navController, userViewModel)
+                    BottomNavigationBar(viewModel = artworkViewModel, userViewModel =userViewModel )
+                    //ReportScreen(navController, userViewModel)
                 }
             }
         }

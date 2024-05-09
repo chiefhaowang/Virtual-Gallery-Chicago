@@ -62,21 +62,30 @@ fun ReportScreen(navController: NavHostController, userViewModel: UserViewModel)
 
     val pieEntries = remember { mutableStateOf<List<PieEntry>>(emptyList()) }
 
-    DisposableEffect(Unit) {
-        val cloudInterface = CloudInterface()
+    LaunchedEffect(email) {
         if (email != null) {
-            cloudInterface.readUserFavourite(email) { entries ->
+            CloudInterface().readUserFavourite(email) { entries ->
                 if (entries != null) {
                     pieEntries.value = entries
-
                 }
             }
         }
-
-        onDispose {
-
-        }
     }
+//    DisposableEffect(Unit) {
+//        val cloudInterface = CloudInterface()
+//        if (email != null) {
+//            cloudInterface.readUserFavourite(email) { entries ->
+//                if (entries != null) {
+//                    pieEntries.value = entries
+//
+//                }
+//            }
+//        }
+//
+//        onDispose {
+//
+//        }
+//    }
 
     Column(
         modifier = Modifier
