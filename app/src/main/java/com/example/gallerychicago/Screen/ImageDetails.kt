@@ -287,7 +287,7 @@ fun parseArtworkDetails(jsonResponse: String?): ArtworkDetailsResponse? {
     var title = "Title not Found"
     var shortDescription = "Description not Found"
     var artistTitle = "Artist not Found"
-    var artworkTypeId = 0
+    var artworkTypeId = 1
     var imageId = "2d484387-2509-5e8e-2c43-22f9981972eb"
 
     try {
@@ -300,14 +300,15 @@ fun parseArtworkDetails(jsonResponse: String?): ArtworkDetailsResponse? {
 
         val jsonObject = JsonParser.parseString(jsonResponse).asJsonObject
         val data = jsonObject.getAsJsonArray("data")
+
         if (data.size() > 0) {
             val artworkData = data[0].asJsonObject
             id = artworkData.get("id")?.asInt ?: 27992
+            artworkTypeId = artworkData.get("artwork_type_id")?.asInt ?: 1
+            imageId = artworkData.get("image_id")?.asString ?: "2d484387-2509-5e8e-2c43-22f9981972eb"
             title = artworkData.get("title")?.asString ?: "Title not Found"
             shortDescription = artworkData.get("short_description")?.asString ?: "Description not Found"
             artistTitle = artworkData.get("artist_title")?.asString ?: "Artist not Found"
-            artworkTypeId = artworkData.get("artwork_type_id")?.asInt ?: 1
-            imageId = artworkData.get("image_id")?.asString ?: "2d484387-2509-5e8e-2c43-22f9981972eb"
 
             println("Parsed ArtworkDetailsResponse: { id=$id, title='$title', shortDescription='$shortDescription', artistTitle='$artistTitle', artworkTypeId=$artworkTypeId, imageId='$imageId' }")
 

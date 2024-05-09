@@ -140,6 +140,7 @@ class CloudInterface {
 
     // Favourite artworks changes data streaming
     fun addFavouriteArtworkUser(email: String, favouriteArtwork: FavouriteArtwork){
+        println(favouriteArtwork)
         readUserInfo(email){
             var user = User()
             var favouriteArtworks: MutableList<FavouriteArtwork> = mutableListOf()
