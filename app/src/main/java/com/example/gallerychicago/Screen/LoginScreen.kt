@@ -79,18 +79,16 @@ fun LoginScreen(
         Box(  //for red background
             modifier = Modifier
                 .fillMaxWidth()
-                .height(100.dp) // height
                 .background(Color(0xFF952323))
         ) {
-            Text(//title
-                "Login",
-                color = Color(255,255,255),
-                style = TextStyle(
-                    fontFamily = FontFamily.Serif,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 25.sp
-                ),
-                modifier = Modifier.align(Alignment.Center) //
+            Text(
+                text = "Login",
+                color = MaterialTheme.colorScheme.onPrimary,
+                style = MaterialTheme.typography.headlineLarge,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(color = MaterialTheme.colorScheme.primary)
             )
         }
         Column(

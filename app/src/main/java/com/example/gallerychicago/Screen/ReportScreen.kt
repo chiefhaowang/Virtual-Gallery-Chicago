@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -66,18 +67,16 @@ fun ReportScreen(navController: NavHostController, userViewModel: UserViewModel)
         Box(  //for red background
             modifier = Modifier
                 .fillMaxWidth()
-                .height(100.dp) // height
                 .background(Color(0xFF952323))
         ) {
-            Text(//title
-                "Report",
-                color = Color(255, 255, 255),
-                style = TextStyle(
-                    fontFamily = FontFamily.Serif,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 25.sp
-                ),
-                modifier = Modifier.align(Alignment.Center) //
+            Text(
+                text = "Report",
+                color = MaterialTheme.colorScheme.onPrimary,
+                style = MaterialTheme.typography.headlineLarge,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(color = MaterialTheme.colorScheme.primary)
             )
         }
         // calculated the how much percentage of stared increased or decreased compared to the last week
@@ -89,7 +88,7 @@ fun ReportScreen(navController: NavHostController, userViewModel: UserViewModel)
             Spacer(modifier = Modifier.height(40.dp))
 
             CenteredBlackText(
-                "Favourite Artwork Types Category"
+                "Favourite Artwork Types Category",
             )
             Spacer(modifier = Modifier.height(20.dp))
 
@@ -221,7 +220,7 @@ fun PieChartScreen(email: String) {
         pieEntries.value = listOf(
         PieEntry(33f, "Paintings"),
         PieEntry(33f, "Photograph"),
-        PieEntry(33f, "Architectural")
+        PieEntry(33f, "Vessel")
     )
 
     if (pieEntries.value.isEmpty()) {
@@ -232,7 +231,7 @@ fun PieChartScreen(email: String) {
             xValuePosition = PieDataSet.ValuePosition.INSIDE_SLICE
             yValuePosition = PieDataSet.ValuePosition.INSIDE_SLICE
             valueFormatter = PercentValueFormatter()
-            valueTextSize = 22f
+            valueTextSize = 14f
         }
 
         val pieData = PieData(pieDataSet)
@@ -245,7 +244,8 @@ fun PieChartScreen(email: String) {
                     description.isEnabled = false
                     centerText = "Favourites"
                     setDrawCenterText(true)
-                    setEntryLabelTextSize(22f)
+                    setEntryLabelTextSize(20f)
+                    setCenterTextSize(19f)
                     animateY(2000)
                 }
             }

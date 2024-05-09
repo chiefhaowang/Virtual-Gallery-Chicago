@@ -130,7 +130,7 @@ class CloudInterface {
                     PieEntry(percentage, label)
                 }
 
-                println(pieEntries) // Debugging output to ensure data is processed
+                println("========" + pieEntries) // Debugging output to ensure data is processed
                 callback(pieEntries) // Return the list of PieEntry objects via the callback
             } else {
                 println("No user or favourite artworks found")

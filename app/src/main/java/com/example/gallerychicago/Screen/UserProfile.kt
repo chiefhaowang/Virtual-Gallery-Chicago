@@ -109,18 +109,16 @@ fun UserProfile(navController: NavHostController, userViewModel: UserViewModel =
         Box(  //for red background
             modifier = Modifier
                 .fillMaxWidth()
-                .height(100.dp) // height
                 .background(Color(0xFF952323))
         ) {
             Text(
-                "User Profile",
-                color = Color(255,255,255),
-                style = TextStyle(
-                    fontFamily = FontFamily.Serif,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 20.sp
-                ),
-                modifier = Modifier.align(Alignment.Center) //
+                text = "User Profile",
+                color = MaterialTheme.colorScheme.onPrimary,
+                style = MaterialTheme.typography.headlineLarge,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(color = MaterialTheme.colorScheme.primary)
             )
         }
 
