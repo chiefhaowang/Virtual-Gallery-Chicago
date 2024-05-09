@@ -1,7 +1,12 @@
 package com.example.gallerychicago.Screen
 
+import android.content.ContentValues.TAG
+import android.credentials.GetCredentialException
+import android.os.Build
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -36,16 +41,26 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.credentials.CredentialManager
+import androidx.credentials.GetCredentialRequest
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.example.gallerychicago.Data.ArtworkViewModel
 import com.example.gallerychicago.Data.UserViewModel
+import com.google.android.libraries.identity.googleid.GetGoogleIdOption
+import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
+import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
+import kotlinx.coroutines.launch
+import java.security.MessageDigest
+import java.util.UUID
 
 
 @Composable
@@ -158,13 +173,79 @@ fun LoginScreen(
             }
             // Button to choose to login in with google account
             Spacer(modifier = Modifier.height(15.dp))
-            Button(
+            /**Button(
                 onClick = {},
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(Color(0xFF952323)),
             ) {
                 Text("Login in with Google")
             }
+             */
+            GoogleSignInButton(navController)
         }
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
+@Composable
+fun GoogleSignInButton(navController: NavHostController)
+{
+    val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
+    val onClick: () -> Unit =
+        {
+            Toast.makeText(context, "Button clicked!", Toast.LENGTH_SHORT).show()
+            val credentialManager = CredentialManager.create(context)
+
+            val rawNonce = UUID.randomUUID().toString()
+            val bytes = rawNonce.toByteArray()
+            val md = MessageDigest.getInstance("SHA-256")
+            val digest = md.digest(bytes)
+            val hashedNonce = digest.fold("") {str, it -> str + "%02x".format(it)}
+
+            // create GetGoogleIdOption object
+            val googleIdOption: GetGoogleIdOption = GetGoogleIdOption.Builder()
+                .setFilterByAuthorizedAccounts(false)
+                .setServerClientId("508519310831-5jou70a9oo3sgt4adi1e965e2u6692ph.apps.googleusercontent.com")
+                .setNonce(hashedNonce)
+                .build()
+
+            val request: GetCredentialRequest = GetCredentialRequest.Builder()
+                .addCredentialOption(googleIdOption)
+                .build()
+
+            coroutineScope.launch {
+                try {
+                    val result = credentialManager.getCredential(
+                        request = request,
+                        context = context,
+                    )
+                    val credential = result.credential
+
+                    val googleIdTokenCredential = GoogleIdTokenCredential
+                        .createFrom(credential.data)
+
+                    val googleIdToken = googleIdTokenCredential.idToken
+
+                    // Log and show success message
+                    Log.i("GoogleSignIn", googleIdToken)
+                    Toast.makeText(context, "You are signed in with Google", Toast.LENGTH_SHORT).show()
+
+                    // Navigate to Home screen on success
+                    navController.navigate("Home")
+                }catch (e: GetCredentialException) {
+                    Toast.makeText(context, e.message, Toast.LENGTH_SHORT).show()
+                }catch(e: GoogleIdTokenParsingException){
+                    Toast.makeText(context, e.message, Toast.LENGTH_SHORT).show()
+                }
+
+            }
+        }
+    Button(
+        onClick = {onClick},
+        modifier = Modifier.fillMaxWidth(),
+        colors = ButtonDefaults.buttonColors(Color(0xFF952323)))
+    {
+        Text("Login in with Google")
     }
 }

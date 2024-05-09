@@ -40,7 +40,6 @@ fun DisplayFavouriteList(navController: NavController, userViewModel: UserViewMo
     val currentUser by userViewModel.currentUser.observeAsState()
     //User Room retrieve data here
     val email = currentUser?.email ?: "not log in"
-
     var favouriteArtworks by remember { mutableStateOf(emptyList<FavouriteArtwork>()) }
     LaunchedEffect(Unit) {
         fetchCloudData(email) { artworks ->
