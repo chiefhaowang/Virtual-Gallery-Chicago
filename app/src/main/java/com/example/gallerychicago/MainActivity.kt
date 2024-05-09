@@ -13,37 +13,43 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.gallerychicago.ui.theme.GalleryChicagoTheme
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.example.gallerychicago.Data.ArtworkViewModel
-import com.example.gallerychicago.Screen.RegistrationScreen
+import com.example.gallerychicago.Data.UserViewModel
+import com.example.gallerychicago.Screen.Registration
 import com.example.gallerychicago.Screen.BottomNavigationBar
 import com.example.gallerychicago.Screen.DisplayArtworkDetails
 import com.example.gallerychicago.Screen.DisplayFavouriteList
 import com.example.gallerychicago.Screen.UserFavourite
+import com.example.gallerychicago.Screen.LoginScreen
 import com.example.gallerychicago.firebaseInterface.CloudInterface
 
 class MainActivity : ComponentActivity() {
-    private val viewModel: ArtworkViewModel by viewModels()
+    private val artworkViewModel: ArtworkViewModel by viewModels()
+    private  val userViewModel: UserViewModel by viewModels()
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            GalleryChicagoTheme {
+            GalleryChicagoTheme{
+                // initialize navController
+                val navController = rememberNavController()
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
-                ) {
-                    BottomNavigationBar(viewModel = viewModel)
-                    //DisplayArtworkDetails(8624)
-                    //RegistrationScreen()
-
+                )
+                {
+                    BottomNavigationBar(viewModel = artworkViewModel, userViewModel =userViewModel )
                 }
             }
         }
-
         // Google firebase database interface test area ()
-//        val firebaseConnection = CloudInterface()
-//        firebaseConnection.initializaDbRef()
-//        firebaseConnection.userDataGeneratorAdd("wh.tenghe@gmail.com", 205, "title 3", 23)
+        val firebaseConnection = CloudInterface()
+        firebaseConnection.initializaDbRef()
+        firebaseConnection.initializeUser("admimn@gmil.com")
     }
 }
 

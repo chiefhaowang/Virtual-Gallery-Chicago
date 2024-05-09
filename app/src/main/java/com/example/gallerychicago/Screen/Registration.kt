@@ -56,13 +56,14 @@ import androidx.annotation.RequiresApi
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.*
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.navigation.NavController
 import java.text.SimpleDateFormat
 import java.time.Instant
 import java.util.*
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun RegistrationScreen(userViewModel: UserViewModel = viewModel()) {
+fun Registration(userViewModel: UserViewModel = viewModel(), navController: NavController) {
     val emailAvailable by userViewModel.emailAvailable.observeAsState()
 
     val context = LocalContext.current
@@ -162,10 +163,12 @@ fun RegistrationScreen(userViewModel: UserViewModel = viewModel()) {
                 onClick = {
                     if (username.isBlank() || email.isBlank() || password.isBlank() || confirmPassword.isBlank() || dateOfBirth.isBlank()) {
                         Toast.makeText(context, "Please fill in all fields", Toast.LENGTH_LONG).show()
+                    } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                        Toast.makeText(context, "Invalid email format", Toast.LENGTH_LONG).show()
                     } else if (password != confirmPassword) {
                         Toast.makeText(context, "Passwords do not match", Toast.LENGTH_LONG).show()
                     } else {
-                        userViewModel.addUser(name = username,email = email, password = password, birthday = dateOfBirth)
+                        userViewModel.addUser(name = username, email = email, password = password, birthday = dateOfBirth)
                     }
                 },
                 colors = ButtonDefaults.buttonColors(Color(0xFF952323)),
@@ -173,16 +176,20 @@ fun RegistrationScreen(userViewModel: UserViewModel = viewModel()) {
             ) {
                 Text("Register")
             }
-
+            // message to reflect the results
             LaunchedEffect(emailAvailable) {
                 when (emailAvailable) {
-                    true -> Toast.makeText(context, "Registration successful", Toast.LENGTH_LONG).show()
+                    true -> {
+                        Toast.makeText(context, "Registration successful", Toast.LENGTH_LONG).show()
+                        navController.navigate("loginScreen") {
+                            //popUpTo("loginScreen") { inclusive = true }
+                        }
+                    }
                     false -> Toast.makeText(context, "Email already exists", Toast.LENGTH_LONG).show()
-                    null -> {} // No action needed
+                    else -> {}
                 }
             }
         }
-
     }
 }
 

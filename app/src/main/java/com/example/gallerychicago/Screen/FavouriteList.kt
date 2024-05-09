@@ -16,6 +16,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -27,15 +28,18 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.gallerychicago.Data.UserViewModel
 import com.example.gallerychicago.firebaseInterface.CloudInterface
 import com.example.gallerychicago.firebaseInterface.FavouriteArtwork
 
 
-@Composable
-fun DisplayFavouriteList(navController: NavController) {
 
+@Composable
+fun DisplayFavouriteList(navController: NavController, userViewModel: UserViewModel) {
+
+    val currentUser by userViewModel.currentUser.observeAsState()
     //User Room retrieve data here
-    val email = "wh.tenghe@gmail.com" // used for unit test
+    val email = currentUser?.email ?: "not log in"
 
     var favouriteArtworks by remember { mutableStateOf(emptyList<FavouriteArtwork>()) }
     LaunchedEffect(Unit) {
