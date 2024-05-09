@@ -43,13 +43,11 @@ fun BottomNavigationBar(viewModel: ArtworkViewModel, userViewModel: UserViewMode
                         } == true,
                         onClick = {
                             navController.navigate(navItem.route) {
-                                // popUpTo is used to pop up to a given  destination before navigating
+                                // Clearing everything up to the home route to avoid stack accumulation
                                 popUpTo(navController.graph.findStartDestination().id) {
-                                    saveState = true
+                                    saveState = false
                                 }
-//at most one copy of a given destination on the top of the back stack
                                 launchSingleTop = true
-// this navigation action should restore any state previously saved
                                 restoreState = true
                             }
                         }
@@ -95,7 +93,7 @@ fun BottomNavigationBar(viewModel: ArtworkViewModel, userViewModel: UserViewMode
                 arguments = listOf(navArgument("imageId") { type = NavType.IntType })
             ) { backStackEntry ->
                 val imageId = backStackEntry.arguments?.getInt("imageId") ?: 0
-                DisplayArtworkDetails(imageId)
+                DisplayArtworkDetails(imageId, navController)
             }
 //            composable(
 //                "imageDetails/{imageId}",
