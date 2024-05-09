@@ -63,6 +63,7 @@ import java.security.MessageDigest
 import java.util.UUID
 
 
+@RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
 fun LoginScreen(
     navController: NavHostController,

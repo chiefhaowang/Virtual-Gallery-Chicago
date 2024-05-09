@@ -114,7 +114,6 @@ fun ReportScreen(navController: NavHostController, userViewModel: UserViewModel)
 //            SimplifiedPieChart(data = simplifiedPieChartData)
             if (email != null) {
 
-
                 if (pieEntries.value.isEmpty()) {
                     CircularProgressIndicator()
                 } else {

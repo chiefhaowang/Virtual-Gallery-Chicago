@@ -33,6 +33,7 @@ import com.example.gallerychicago.Screen.DisplayArtworkDetails
 import com.example.gallerychicago.Screen.DisplayFavouriteList
 import com.example.gallerychicago.Screen.UserFavourite
 import com.example.gallerychicago.Screen.LoginScreen
+import com.example.gallerychicago.Screen.ReportScreen
 
 import com.example.gallerychicago.firebaseInterface.CloudInterface
 
@@ -54,8 +55,8 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 )
                 {
-                    BottomNavigationBar(viewModel = artworkViewModel, userViewModel =userViewModel )
-
+                    //BottomNavigationBar(viewModel = artworkViewModel, userViewModel =userViewModel )
+                    ReportScreen(navController, userViewModel)
                 }
             }
         }
