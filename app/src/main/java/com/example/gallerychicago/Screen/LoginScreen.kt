@@ -1,5 +1,7 @@
 package com.example.gallerychicago.Screen
 
+import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -31,15 +33,44 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
+import com.example.gallerychicago.Data.ArtworkViewModel
+import com.example.gallerychicago.Data.UserViewModel
 
 
-@Preview(showBackground = true)
 @Composable
-fun LoginScreen() {
+fun LoginScreen(
+    navController: NavHostController,
+    userViewModel: UserViewModel = viewModel(),
+    artworkViewModel: ArtworkViewModel = viewModel()
+    )
+{
+    // define the variables
+    val context = LocalContext.current
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+
+    fun validateLoginForm(): Boolean {
+        if (email.isBlank() || password.isBlank()) {
+            Toast.makeText(context, "Email and password cannot be empty", Toast.LENGTH_LONG).show()
+            return false
+        } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            Toast.makeText(context, "Invalid email format", Toast.LENGTH_LONG).show()
+            return false
+        }
+        return true
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -65,51 +96,72 @@ fun LoginScreen() {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp)
-            ,
+                .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
             Spacer(modifier = Modifier.height(20.dp))
             Text("Welcome to the Art Gallery",
-                color = Color(0xFF17273B),
+                color = Color(0xFF952323),
                 style = TextStyle(
                     fontFamily = FontFamily.Serif,
-                    fontWeight = FontWeight.Bold,
                     fontSize = 25.sp
                 ),)
             Spacer(modifier = Modifier.height(30.dp))
+
+            // field for email
             TextField(
-                value = "",
-                onValueChange = {},
+                value = email,
+                onValueChange = {
+                    email = it
+                   },
                 label = { Text("Email Address") }
             )
             Spacer(modifier = Modifier.height(20.dp))
+            // field for password
             TextField(
-                value = "",
-                onValueChange = {},
+                value = password,
+                onValueChange = {password = it},
                 label = { Text("Password") },
-                visualTransformation = PasswordVisualTransformation()
+                //visualTransformation = PasswordVisualTransformation()
             )
             Spacer(modifier = Modifier.height(30.dp))
+
+            // button to login in, if login in successfully, it will go to homepage
             Button(
-                onClick = {},
+                onClick = {
+                    if (validateLoginForm()) {
+                        userViewModel.loginUser(email, password) { user ->
+                            if (user != null) {
+                                navController.navigate("mainScreen")  // Navigate on success
+                            } else {
+                                Toast.makeText(context, "Incorrect email or password", Toast.LENGTH_LONG).show()
+                            }
+                        }
+                    }
+                },
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(Color(0xFF952323)),
             ) {
                 Text("Login")
             }
+
             Spacer(modifier = Modifier.height(15.dp))
+
+            // Button to RegistrationScreen
             Button(
-                onClick = { },
+                onClick = {
+                    println("Button clicked to RegistrationScreen!")
+                    navController.navigate("Registration") },
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(Color(0xFF952323)),
             ) {
                 Text("Create Account")
             }
+            // Button to choose to login in with google account
             Spacer(modifier = Modifier.height(15.dp))
             Button(
-                onClick = { },
+                onClick = {},
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(Color(0xFF952323)),
             ) {

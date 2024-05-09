@@ -38,4 +38,15 @@ interface UserDao
     // Check if the email exists in the users table
     @Query("SELECT EXISTS(SELECT 1 FROM users WHERE email = :email)")
     suspend fun isEmailExists(email: String): Boolean
+
+    // get logged user
+    @Query("SELECT * FROM users WHERE isLoggedIn = 1 LIMIT 1")
+    suspend fun getLoggedInUser(): User?
+    // check logged user
+    @Query("UPDATE users SET isLoggedIn = true WHERE id = :userId")
+    suspend fun loginUser(userId: Int)
+
+    // log out
+    @Query("UPDATE users SET isLoggedIn = false WHERE id = :userId")
+    suspend fun logoutUser(userId: Int)
 }

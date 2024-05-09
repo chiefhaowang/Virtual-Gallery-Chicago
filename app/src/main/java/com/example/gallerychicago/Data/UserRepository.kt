@@ -38,17 +38,22 @@ class UserRepository(application: Application)
         val user = userDao.getUserByEmail(email)
         if (user?.password == password)
         {
+            userDao.loginUser(user.id)
             return user
         }
         return null
     }
-
-    suspend fun getCurrentUser(email: String): User? {
-        return userDao.getUserByEmail(email)
+    //get current user
+    suspend fun getCurrentUser(): User? {
+        return userDao.getLoggedInUser()
     }
 
     // Check if the email exists in the database
     suspend fun isEmailExists(email: String): Boolean {
         return userDao.isEmailExists(email)
+    }
+    // get current logged user
+    suspend fun logoutUser(user: User) {
+        userDao.logoutUser(user.id)  // log out
     }
 }
