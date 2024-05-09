@@ -133,7 +133,7 @@ fun LoginScreen(
                     if (validateLoginForm()) {
                         userViewModel.loginUser(email, password) { user ->
                             if (user != null) {
-                                navController.navigate("mainScreen")  // Navigate on success
+                                navController.navigate("Home")  // Navigate on success
                             } else {
                                 Toast.makeText(context, "Incorrect email or password", Toast.LENGTH_LONG).show()
                             }

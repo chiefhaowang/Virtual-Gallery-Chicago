@@ -42,26 +42,14 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 )
                 {
-                    NavHost(navController = navController, startDestination = "loginScreen") {
-                        composable("loginScreen") {
-                            LoginScreen(navController, userViewModel, artworkViewModel)
-                        }
-                        composable("Registration") {
-                            Registration(userViewModel, navController)
-                        }
-                        //after successful login in
-                        composable("mainScreen") {
-                            BottomNavigationBar(artworkViewModel)
-                        }
-
-
+                    BottomNavigationBar(viewModel = artworkViewModel, userViewModel =userViewModel )
                 }
             }
         }
         // Google firebase database interface test area ()
-//        val firebaseConnection = CloudInterface()
-//        firebaseConnection.initializaDbRef()
-//        firebaseConnection.userDataGeneratorAdd("wh.tenghe@gmail.com", 205, "title 3", 23)
+        val firebaseConnection = CloudInterface()
+        firebaseConnection.initializaDbRef()
+        firebaseConnection.initializeUser("admimn@gmil.com")
     }
 }
 
@@ -70,4 +58,4 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun GreetingPreview() {
     GalleryChicagoTheme{}
-}}
+}

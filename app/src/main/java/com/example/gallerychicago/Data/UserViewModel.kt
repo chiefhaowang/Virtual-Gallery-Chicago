@@ -22,7 +22,7 @@ import com.example.gallerychicago.firebaseInterface.CloudInterface
 class UserViewModel (application: Application): AndroidViewModel(application)
 {
     private val userRepository: UserRepository = UserRepository(application)
-    private val cloudInterface = CloudInterface()
+    val cloudInterface = CloudInterface()
 
     /**
      * manage login
@@ -35,16 +35,10 @@ class UserViewModel (application: Application): AndroidViewModel(application)
         loadCurrentUser()
     }
 
+    // load the user information
     fun loadCurrentUser() {
         viewModelScope.launch {
             currentUser.value = userRepository.getCurrentUser()
-        }
-    }
-
-    fun loginUser(email: String, password: String) {
-        viewModelScope.launch {
-            val user = userRepository.loginUser(email, password)
-            currentUser.value = user
         }
     }
 
@@ -95,7 +89,9 @@ class UserViewModel (application: Application): AndroidViewModel(application)
                 val newUser = User(name = name, email = email, password = password, birthday = birthday, description = null, isLoggedIn = false)
                 userRepository.insertUser(newUser)
                 // upload data to google firebase
-                //cloudInterface.initializeUser(email)
+                cloudInterface.initializaDbRef()
+                println(email)
+                cloudInterface.initializeUser(email)
                 emailAvailable.postValue(true)  // email doesn't exist
             } else {
                 emailAvailable.postValue(false)  // email exists in database
@@ -107,6 +103,7 @@ class UserViewModel (application: Application): AndroidViewModel(application)
     fun updateUserName(userId: Int, name: String) {
         viewModelScope.launch(Dispatchers.IO) {
             userRepository.updateUserName(userId, name)
+            currentUser.postValue(userRepository.getUserById(userId))
         }
     }
 
@@ -114,6 +111,7 @@ class UserViewModel (application: Application): AndroidViewModel(application)
     fun updateUserDescription(userId: Int, description: String) {
         viewModelScope.launch(Dispatchers.IO) {
             userRepository.updateUserDescription(userId, description)
+            currentUser.postValue(userRepository.getUserById(userId))
         }
     }
 

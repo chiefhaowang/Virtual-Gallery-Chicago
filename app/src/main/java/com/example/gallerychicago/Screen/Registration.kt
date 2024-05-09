@@ -182,7 +182,7 @@ fun Registration(userViewModel: UserViewModel = viewModel(), navController: NavC
                     true -> {
                         Toast.makeText(context, "Registration successful", Toast.LENGTH_LONG).show()
                         navController.navigate("loginScreen") {
-                            popUpTo("loginScreen") { inclusive = true }
+                            //popUpTo("loginScreen") { inclusive = true }
                         }
                     }
                     false -> Toast.makeText(context, "Email already exists", Toast.LENGTH_LONG).show()

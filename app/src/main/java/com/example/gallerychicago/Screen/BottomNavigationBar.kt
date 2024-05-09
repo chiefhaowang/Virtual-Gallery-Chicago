@@ -1,5 +1,7 @@
 package com.example.gallerychicago.Screen
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
@@ -19,10 +21,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import com.example.gallerychicago.Data.ArtworkViewModel
+import com.example.gallerychicago.Data.UserViewModel
 
 
 @Composable
-fun BottomNavigationBar(viewModel: ArtworkViewModel) {
+fun BottomNavigationBar(viewModel: ArtworkViewModel, userViewModel: UserViewModel) {
     val navController = rememberNavController()
     Scaffold(
         bottomBar = {
@@ -57,7 +60,7 @@ fun BottomNavigationBar(viewModel: ArtworkViewModel) {
     ) { paddingValues ->
         NavHost(
             navController,
-            startDestination = Routes.Home.value,
+            startDestination = "loginScreen",
             //startDestination = "FavouriteList",
             Modifier.padding(paddingValues)
         ) {
@@ -78,8 +81,15 @@ fun BottomNavigationBar(viewModel: ArtworkViewModel) {
             // Jump between pages
             composable("FavouriteList")
             {
-                DisplayFavouriteList(navController)
+                DisplayFavouriteList(navController, userViewModel)
             }
+            composable("loginScreen") {
+                LoginScreen(navController, userViewModel, viewModel)
+            }
+            composable("Registration") {
+                Registration(userViewModel, navController)
+            }
+            //after successful login in
             composable(
                 "imageDetails/{imageId}",
                 arguments = listOf(navArgument("imageId") { type = NavType.IntType })

@@ -32,7 +32,7 @@ class CloudInterface {
         val likedArtworks: MutableList<LikedArtwork> = mutableListOf()
         val user = User(userIdGenerator(email), favouriteArtworks, likedArtworks)
 
-        database.child("users").child(email).setValue(user)
+        database.child("users").child(userIdGenerator(email)).setValue(user)
             .addOnSuccessListener {
                 println("user data initialized")
             }
