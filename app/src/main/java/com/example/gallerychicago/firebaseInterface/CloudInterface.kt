@@ -42,6 +42,7 @@ class CloudInterface {
         favouriteArtworks.add(favouriteArtwork)
 
         val user = User(userIdGenerator(email), favouriteArtworks, likedArtworks)
+        println("User initialised in cloud")
 
 
 

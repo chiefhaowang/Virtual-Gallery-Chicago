@@ -52,7 +52,15 @@ android {
 }
 
 dependencies {
+    // google credentials
+    implementation("androidx.credentials:credentials:1.3.0-alpha03")
 
+    // sign in with google
+    //implementation ("androidx.credentials:credentials:<latest version>")
+    //implementation ("androidx.credentials:credentials-play-services-auth:<latest version>")
+    implementation ("com.google.android.libraries.identity.googleid:googleid:1.1.0")
+
+    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
     implementation("androidx.activity:activity-compose:1.8.2")
