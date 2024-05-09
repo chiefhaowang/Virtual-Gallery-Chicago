@@ -16,6 +16,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -34,10 +39,23 @@ import androidx.navigation.NavHostController
 import com.example.gallerychicago.R
 import kotlin.math.cos
 import kotlin.math.sin
+import androidx.compose.ui.viewinterop.AndroidView
+import com.example.gallerychicago.Data.UserViewModel
+import com.example.gallerychicago.firebaseInterface.CloudInterface
+import com.github.mikephil.charting.charts.PieChart
+import com.github.mikephil.charting.data.PieData
+import com.github.mikephil.charting.data.PieDataSet
+import com.github.mikephil.charting.data.PieEntry
+import com.github.mikephil.charting.formatter.ValueFormatter
+import com.github.mikephil.charting.utils.ColorTemplate
+
 
 @Composable
-fun ReportScreen(navController: NavHostController)
+fun ReportScreen(navController: NavHostController, userViewModel: UserViewModel)
 {
+    val currentUser by userViewModel.currentUser.observeAsState()
+    val email = currentUser?.email
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -73,7 +91,11 @@ fun ReportScreen(navController: NavHostController)
                         "the category you collected the most last week was Print, accounting for 40% of your collections."
             )
             Spacer(modifier = Modifier.height(20.dp))
-            SimplifiedPieChart(data = simplifiedPieChartData)
+
+//            SimplifiedPieChart(data = simplifiedPieChartData)
+            if (email != null) {
+                PieChartScreen(email)
+            }
             Spacer(modifier = Modifier.height(30.dp))
         }
 
@@ -138,7 +160,6 @@ fun SimplifiedPieChart(data: List<PieChartData>) {
                 val sweepAngle = (chartData.percentage / total) * 360f
                 //
                 val sectionCenterAngle = Math.toRadians((startAngle + sweepAngle / 2).toDouble()).toFloat()
-                // 扇形中心的偏移位置
                 val sectionCenterOffset = Offset(
                     cos(sectionCenterAngle) * radius * 0.5f,
                     sin(sectionCenterAngle) * radius * 0.5f
@@ -173,3 +194,48 @@ fun SimplifiedPieChart(data: List<PieChartData>) {
         }
     }
 }
+
+@Composable
+fun PieChartScreen(email: String) {
+    val pieEntries = remember { mutableStateOf<List<PieEntry>>(emptyList()) }
+
+    LaunchedEffect(true) {
+        CloudInterface().readUserFavourite(email) { entries ->
+            if (entries != null) {
+                pieEntries.value = entries
+            }
+        }
+    }
+
+    val pieDataSet = PieDataSet(pieEntries.value, "Pie Data Set")
+    pieDataSet.colors = ColorTemplate.COLORFUL_COLORS.toList()
+    val pieData = PieData(pieDataSet)
+    pieDataSet.xValuePosition = PieDataSet.ValuePosition.INSIDE_SLICE
+    pieDataSet.yValuePosition = PieDataSet.ValuePosition.INSIDE_SLICE
+    pieDataSet.valueFormatter = PercentValueFormatter()
+    pieDataSet.valueTextSize = 20f
+
+    AndroidView(
+        modifier = Modifier.fillMaxSize(),
+        factory = { context ->
+            PieChart(context).apply {
+                data = pieData
+                description.isEnabled = false
+                centerText = "Favourites"
+                setDrawCenterText(true)
+                setEntryLabelTextSize(10f)
+                animateY(3000)
+            }
+        }
+    )
+}
+
+
+//we used this class for formatting value (adding % sign)
+class PercentValueFormatter : ValueFormatter() {
+    override fun getFormattedValue(value: Float): String {
+//you can create your own formatting style below
+        return "${value.toInt()}%"
+    }
+}
+
