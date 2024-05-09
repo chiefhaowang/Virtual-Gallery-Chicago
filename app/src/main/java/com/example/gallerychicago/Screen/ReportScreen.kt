@@ -19,6 +19,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -199,29 +200,20 @@ fun SimplifiedPieChart(data: List<PieChartData>) {
 fun PieChartScreen(email: String) {
     val pieEntries = remember { mutableStateOf<List<PieEntry>>(emptyList()) }
 
-    // don't go into the readUserFavourite
-//    CloudInterface().readUserFavourite(email) { entries ->
-//        if (entries != null) {
-//            println(entries)
-//            pieEntries.value = entries
-//        }
-//    }
-
-    LaunchedEffect(true) {
-        CloudInterface().readUserFavourite(email) { entries ->
+    DisposableEffect(Unit) {
+        val cloudInterface = CloudInterface()
+        cloudInterface.readUserFavourite(email) { entries ->
             if (entries != null) {
                 pieEntries.value = entries
+
             }
+        }
+
+        onDispose {
+
         }
     }
 
-        println(pieEntries.value)
-
-        pieEntries.value = listOf(
-        PieEntry(33f, "Paintings"),
-        PieEntry(33f, "Photograph"),
-        PieEntry(33f, "Vessel")
-    )
 
     if (pieEntries.value.isEmpty()) {
         CircularProgressIndicator()
@@ -252,7 +244,6 @@ fun PieChartScreen(email: String) {
         )
     }
 }
-
 
 
 //we used this class for formatting value (adding % sign)

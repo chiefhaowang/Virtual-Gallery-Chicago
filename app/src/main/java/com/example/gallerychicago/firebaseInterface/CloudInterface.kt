@@ -130,7 +130,11 @@ class CloudInterface {
                     PieEntry(percentage, label)
                 }
 
+
+                //println(pieEntries) // Debugging output to ensure data is processed
+
                 println("========" + pieEntries) // Debugging output to ensure data is processed
+
                 callback(pieEntries) // Return the list of PieEntry objects via the callback
             } else {
                 println("No user or favourite artworks found")
@@ -138,6 +142,39 @@ class CloudInterface {
             }
         }
     }
+
+//    fun readUserFavourite(email: String):List<PieEntry>{
+//        val typeNames = mapOf(
+//            1 to "Painting",
+//            2 to "Photograph",
+//            18 to "Print",
+//            3 to "Sculpture",
+//            34 to "Architectural",
+//            5 to "Textile",
+//            6 to "Furniture",
+//            23 to "Vessel"
+//        )
+//
+//        readUserInfo(email) { user ->
+//            if (user?.favouriteArtworks != null && user.favouriteArtworks.isNotEmpty()) {
+//                val total = user.favouriteArtworks.size.toDouble()
+//                val typeCount = user.favouriteArtworks.groupingBy { it.type ?: 0 }.eachCount()
+//
+//                // Create a list of PieEntry objects based on the actual data
+//                val pieEntries = typeCount.map { (type, count) ->
+//                    val percentage = (count / total * 100).toFloat()
+//                    val label = typeNames[type] ?: "Unknown"
+//                    PieEntry(percentage, label)
+//                }
+//
+//                println(pieEntries) // Debugging output to ensure data is processed
+//                return pieEntries // Return the list of PieEntry objects via the callback
+//            } else {
+//                println("No user or favourite artworks found")
+//
+//            }
+//        }
+//    }
 
 
     // Favourite artworks changes data streaming

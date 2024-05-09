@@ -59,7 +59,7 @@ fun BottomNavigationBar(viewModel: ArtworkViewModel, userViewModel: UserViewMode
         NavHost(
             navController,
             startDestination = "loginScreen",
-            //startDestination = "FavouriteList",
+            //startDestination = Routes.ReportScreen.value,
             Modifier.padding(paddingValues)
         ) {
             composable(Routes.Home.value) {
@@ -95,14 +95,6 @@ fun BottomNavigationBar(viewModel: ArtworkViewModel, userViewModel: UserViewMode
                 val imageId = backStackEntry.arguments?.getInt("imageId") ?: 0
                 DisplayArtworkDetails(imageId, navController, userViewModel)
             }
-//            composable(
-//                "imageDetails/{imageId}",
-//                arguments = listOf(navArgument("imageId") { type = NavType.IntType })
-//            ) { backStackEntry ->
-//                val imageId = backStackEntry.arguments?.getInt("imageId") ?: 27992
-//                println("Image ID in navigation is $imageId")
-//                DisplayArtworkDetails(imageId)
-//            }
 
         }
     }
