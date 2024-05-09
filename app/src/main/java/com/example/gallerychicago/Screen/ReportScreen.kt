@@ -60,6 +60,24 @@ fun ReportScreen(navController: NavHostController, userViewModel: UserViewModel)
     val currentUser by userViewModel.currentUser.observeAsState()
     val email = currentUser?.email
 
+    val pieEntries = remember { mutableStateOf<List<PieEntry>>(emptyList()) }
+
+    DisposableEffect(Unit) {
+        val cloudInterface = CloudInterface()
+        if (email != null) {
+            cloudInterface.readUserFavourite(email) { entries ->
+                if (entries != null) {
+                    pieEntries.value = entries
+
+                }
+            }
+        }
+
+        onDispose {
+
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -95,7 +113,37 @@ fun ReportScreen(navController: NavHostController, userViewModel: UserViewModel)
 
 //            SimplifiedPieChart(data = simplifiedPieChartData)
             if (email != null) {
-                PieChartScreen(email)
+
+
+                if (pieEntries.value.isEmpty()) {
+                    CircularProgressIndicator()
+                } else {
+                    val pieDataSet = PieDataSet(pieEntries.value, "Pie Data Set").apply {
+                        colors = ColorTemplate.COLORFUL_COLORS.toList()
+                        xValuePosition = PieDataSet.ValuePosition.INSIDE_SLICE
+                        yValuePosition = PieDataSet.ValuePosition.INSIDE_SLICE
+                        valueFormatter = PercentValueFormatter()
+                        valueTextSize = 14f
+                    }
+
+                    val pieData = PieData(pieDataSet)
+
+                    AndroidView(
+                        modifier = Modifier.fillMaxSize(),
+                        factory = { context ->
+                            PieChart(context).apply {
+                                data = pieData
+                                description.isEnabled = false
+                                centerText = "Favourites"
+                                setDrawCenterText(true)
+                                setEntryLabelTextSize(20f)
+                                setCenterTextSize(19f)
+                                animateY(2000)
+                            }
+                        }
+                    )
+                }
+
             }
             Spacer(modifier = Modifier.height(30.dp))
         }
@@ -196,54 +244,53 @@ fun SimplifiedPieChart(data: List<PieChartData>) {
     }
 }
 
-@Composable
-fun PieChartScreen(email: String) {
-    val pieEntries = remember { mutableStateOf<List<PieEntry>>(emptyList()) }
-
-    DisposableEffect(Unit) {
-        val cloudInterface = CloudInterface()
-        cloudInterface.readUserFavourite(email) { entries ->
-            if (entries != null) {
-                pieEntries.value = entries
-
-            }
-        }
-
-        onDispose {
-
-        }
-    }
-
-
-    if (pieEntries.value.isEmpty()) {
-        CircularProgressIndicator()
-    } else {
-        val pieDataSet = PieDataSet(pieEntries.value, "Pie Data Set").apply {
-            colors = ColorTemplate.COLORFUL_COLORS.toList()
-            xValuePosition = PieDataSet.ValuePosition.INSIDE_SLICE
-            yValuePosition = PieDataSet.ValuePosition.INSIDE_SLICE
-            valueFormatter = PercentValueFormatter()
-            valueTextSize = 14f
-        }
-
-        val pieData = PieData(pieDataSet)
-
-        AndroidView(
-            modifier = Modifier.fillMaxSize(),
-            factory = { context ->
-                PieChart(context).apply {
-                    data = pieData
-                    description.isEnabled = false
-                    centerText = "Favourites"
-                    setDrawCenterText(true)
-                    setEntryLabelTextSize(20f)
-                    setCenterTextSize(19f)
-                    animateY(2000)
-                }
-            }
-        )
-    }
-}
+//@Composable
+//fun PieChartScreen(email: String) {
+//    val pieEntries = remember { mutableStateOf<List<PieEntry>>(emptyList()) }
+//
+//    DisposableEffect(Unit) {
+//        val cloudInterface = CloudInterface()
+//        cloudInterface.readUserFavourite(email) { entries ->
+//            if (entries != null) {
+//                pieEntries.value = entries
+//
+//            }
+//        }
+//
+//        onDispose {
+//
+//        }
+//    }
+//
+//    if (pieEntries.value.isEmpty()) {
+//        CircularProgressIndicator()
+//    } else {
+//        val pieDataSet = PieDataSet(pieEntries.value, "Pie Data Set").apply {
+//            colors = ColorTemplate.COLORFUL_COLORS.toList()
+//            xValuePosition = PieDataSet.ValuePosition.INSIDE_SLICE
+//            yValuePosition = PieDataSet.ValuePosition.INSIDE_SLICE
+//            valueFormatter = PercentValueFormatter()
+//            valueTextSize = 14f
+//        }
+//
+//        val pieData = PieData(pieDataSet)
+//
+//        AndroidView(
+//            modifier = Modifier.fillMaxSize(),
+//            factory = { context ->
+//                PieChart(context).apply {
+//                    data = pieData
+//                    description.isEnabled = false
+//                    centerText = "Favourites"
+//                    setDrawCenterText(true)
+//                    setEntryLabelTextSize(20f)
+//                    setCenterTextSize(19f)
+//                    animateY(2000)
+//                }
+//            }
+//        )
+//    }
+//}
 
 
 //we used this class for formatting value (adding % sign)
