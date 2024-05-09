@@ -25,7 +25,7 @@ import com.example.gallerychicago.Screen.DisplayArtworkDetails
 import com.example.gallerychicago.Screen.DisplayFavouriteList
 import com.example.gallerychicago.Screen.UserFavourite
 import com.example.gallerychicago.Screen.LoginScreen
-import com.example.gallerychicago.Screen.PieChartScreen
+
 import com.example.gallerychicago.firebaseInterface.CloudInterface
 
 class MainActivity : ComponentActivity() {
@@ -44,8 +44,8 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 )
                 {
-                    //BottomNavigationBar(viewModel = artworkViewModel, userViewModel =userViewModel )
-                    PieChartScreen("wh.tenghe@gmail.com")
+                    BottomNavigationBar(viewModel = artworkViewModel, userViewModel =userViewModel )
+                    //PieChartScreen("wh.tenghe@gmail.com")
                 }
             }
         }
