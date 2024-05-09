@@ -307,8 +307,9 @@ fun parseArtworkDetails(jsonResponse: String?): ArtworkDetailsResponse? {
             artworkTypeId = artworkData.get("artwork_type_id")?.asInt ?: 1
             imageId = artworkData.get("image_id")?.asString ?: "2d484387-2509-5e8e-2c43-22f9981972eb"
             title = artworkData.get("title")?.asString ?: "Title not Found"
-            shortDescription = artworkData.get("short_description")?.asString ?: "Description not Found"
             artistTitle = artworkData.get("artist_title")?.asString ?: "Artist not Found"
+            shortDescription = artworkData.get("short_description")?.asString ?: "Description not Found"
+
 
             println("Parsed ArtworkDetailsResponse: { id=$id, title='$title', shortDescription='$shortDescription', artistTitle='$artistTitle', artworkTypeId=$artworkTypeId, imageId='$imageId' }")
 

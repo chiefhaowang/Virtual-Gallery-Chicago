@@ -1,5 +1,6 @@
 package com.example.gallerychicago.Screen
 
+import android.annotation.SuppressLint
 import android.graphics.Paint
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
@@ -14,8 +15,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -64,18 +68,16 @@ fun ReportScreen(navController: NavHostController, userViewModel: UserViewModel)
         Box(  //for red background
             modifier = Modifier
                 .fillMaxWidth()
-                .height(100.dp) // height
                 .background(Color(0xFF952323))
         ) {
-            Text(//title
-                "Report",
-                color = Color(255, 255, 255),
-                style = TextStyle(
-                    fontFamily = FontFamily.Serif,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 25.sp
-                ),
-                modifier = Modifier.align(Alignment.Center) //
+            Text(
+                text = "Report",
+                color = MaterialTheme.colorScheme.onPrimary,
+                style = MaterialTheme.typography.headlineLarge,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(color = MaterialTheme.colorScheme.primary)
             )
         }
         // calculated the how much percentage of stared increased or decreased compared to the last week
@@ -87,8 +89,7 @@ fun ReportScreen(navController: NavHostController, userViewModel: UserViewModel)
             Spacer(modifier = Modifier.height(40.dp))
 
             CenteredBlackText(
-                "Dear tourist, " +
-                        "the category you collected the most last week was Print, accounting for 40% of your collections."
+                "Favourite Artwork Types Category",
             )
             Spacer(modifier = Modifier.height(20.dp))
 
@@ -199,35 +200,49 @@ fun SimplifiedPieChart(data: List<PieChartData>) {
 fun PieChartScreen(email: String) {
     val pieEntries = remember { mutableStateOf<List<PieEntry>>(emptyList()) }
 
-    LaunchedEffect(true) {
-        CloudInterface().readUserFavourite(email) { entries ->
+    DisposableEffect(Unit) {
+        val cloudInterface = CloudInterface()
+        cloudInterface.readUserFavourite(email) { entries ->
             if (entries != null) {
                 pieEntries.value = entries
+
             }
+        }
+
+        onDispose {
+
         }
     }
 
-    val pieDataSet = PieDataSet(pieEntries.value, "Pie Data Set")
-    pieDataSet.colors = ColorTemplate.COLORFUL_COLORS.toList()
-    val pieData = PieData(pieDataSet)
-    pieDataSet.xValuePosition = PieDataSet.ValuePosition.INSIDE_SLICE
-    pieDataSet.yValuePosition = PieDataSet.ValuePosition.INSIDE_SLICE
-    pieDataSet.valueFormatter = PercentValueFormatter()
-    pieDataSet.valueTextSize = 20f
 
-    AndroidView(
-        modifier = Modifier.fillMaxSize(),
-        factory = { context ->
-            PieChart(context).apply {
-                data = pieData
-                description.isEnabled = false
-                centerText = "Favourites"
-                setDrawCenterText(true)
-                setEntryLabelTextSize(10f)
-                animateY(3000)
-            }
+    if (pieEntries.value.isEmpty()) {
+        CircularProgressIndicator()
+    } else {
+        val pieDataSet = PieDataSet(pieEntries.value, "Pie Data Set").apply {
+            colors = ColorTemplate.COLORFUL_COLORS.toList()
+            xValuePosition = PieDataSet.ValuePosition.INSIDE_SLICE
+            yValuePosition = PieDataSet.ValuePosition.INSIDE_SLICE
+            valueFormatter = PercentValueFormatter()
+            valueTextSize = 14f
         }
-    )
+
+        val pieData = PieData(pieDataSet)
+
+        AndroidView(
+            modifier = Modifier.fillMaxSize(),
+            factory = { context ->
+                PieChart(context).apply {
+                    data = pieData
+                    description.isEnabled = false
+                    centerText = "Favourites"
+                    setDrawCenterText(true)
+                    setEntryLabelTextSize(20f)
+                    setCenterTextSize(19f)
+                    animateY(2000)
+                }
+            }
+        )
+    }
 }
 
 

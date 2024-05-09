@@ -2,6 +2,7 @@ package com.example.gallerychicago.firebaseInterface
 
 import android.content.ContentValues
 import android.util.Log
+import androidx.compose.runtime.mutableStateOf
 import com.github.mikephil.charting.data.PieEntry
 import com.google.firebase.Firebase
 import com.google.firebase.database.DataSnapshot
@@ -115,7 +116,7 @@ class CloudInterface {
             34 to "Architectural",
             5 to "Textile",
             6 to "Furniture",
-            23 to "Vessel",
+            23 to "Vessel"
         )
 
         readUserInfo(email) { user ->
@@ -123,21 +124,59 @@ class CloudInterface {
                 val total = user.favouriteArtworks.size.toDouble()
                 val typeCount = user.favouriteArtworks.groupingBy { it.type ?: 0 }.eachCount()
 
-                // Calculate the percentages and create PieEntry objects
-                val pieEntries = typeCount.mapNotNull { (type, count) ->
-                    typeNames[type]?.let { name ->
-                        PieEntry((count / total * 100).toFloat(), name)
-                    }
+                // Create a list of PieEntry objects based on the actual data
+                val pieEntries = typeCount.map { (type, count) ->
+                    val percentage = (count / total * 100).toFloat()
+                    val label = typeNames[type] ?: "Unknown"
+                    PieEntry(percentage, label)
                 }
 
-                // Return the list of PieEntry objects via the callback
-                callback(pieEntries)
+
+                //println(pieEntries) // Debugging output to ensure data is processed
+
+                println("========" + pieEntries) // Debugging output to ensure data is processed
+
+                callback(pieEntries) // Return the list of PieEntry objects via the callback
             } else {
                 println("No user or favourite artworks found")
-                callback(null)
+                callback(null) // Handle cases where no artworks are found
             }
         }
     }
+
+//    fun readUserFavourite(email: String):List<PieEntry>{
+//        val typeNames = mapOf(
+//            1 to "Painting",
+//            2 to "Photograph",
+//            18 to "Print",
+//            3 to "Sculpture",
+//            34 to "Architectural",
+//            5 to "Textile",
+//            6 to "Furniture",
+//            23 to "Vessel"
+//        )
+//
+//        readUserInfo(email) { user ->
+//            if (user?.favouriteArtworks != null && user.favouriteArtworks.isNotEmpty()) {
+//                val total = user.favouriteArtworks.size.toDouble()
+//                val typeCount = user.favouriteArtworks.groupingBy { it.type ?: 0 }.eachCount()
+//
+//                // Create a list of PieEntry objects based on the actual data
+//                val pieEntries = typeCount.map { (type, count) ->
+//                    val percentage = (count / total * 100).toFloat()
+//                    val label = typeNames[type] ?: "Unknown"
+//                    PieEntry(percentage, label)
+//                }
+//
+//                println(pieEntries) // Debugging output to ensure data is processed
+//                return pieEntries // Return the list of PieEntry objects via the callback
+//            } else {
+//                println("No user or favourite artworks found")
+//
+//            }
+//        }
+//    }
+
 
     // Favourite artworks changes data streaming
     fun addFavouriteArtworkUser(email: String, favouriteArtwork: FavouriteArtwork){
