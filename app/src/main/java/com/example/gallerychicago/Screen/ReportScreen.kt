@@ -1,5 +1,6 @@
 package com.example.gallerychicago.Screen
 
+import android.annotation.SuppressLint
 import android.graphics.Paint
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -87,8 +89,7 @@ fun ReportScreen(navController: NavHostController, userViewModel: UserViewModel)
             Spacer(modifier = Modifier.height(40.dp))
 
             CenteredBlackText(
-                "Dear tourist, " +
-                        "the category you collected the most last week was Print, accounting for 40% of your collections."
+                "Favourite Artwork Types Category"
             )
             Spacer(modifier = Modifier.height(20.dp))
 
@@ -199,6 +200,14 @@ fun SimplifiedPieChart(data: List<PieChartData>) {
 fun PieChartScreen(email: String) {
     val pieEntries = remember { mutableStateOf<List<PieEntry>>(emptyList()) }
 
+    // don't go into the readUserFavourite
+//    CloudInterface().readUserFavourite(email) { entries ->
+//        if (entries != null) {
+//            println(entries)
+//            pieEntries.value = entries
+//        }
+//    }
+
     LaunchedEffect(true) {
         CloudInterface().readUserFavourite(email) { entries ->
             if (entries != null) {
@@ -207,28 +216,43 @@ fun PieChartScreen(email: String) {
         }
     }
 
-    val pieDataSet = PieDataSet(pieEntries.value, "Pie Data Set")
-    pieDataSet.colors = ColorTemplate.COLORFUL_COLORS.toList()
-    val pieData = PieData(pieDataSet)
-    pieDataSet.xValuePosition = PieDataSet.ValuePosition.INSIDE_SLICE
-    pieDataSet.yValuePosition = PieDataSet.ValuePosition.INSIDE_SLICE
-    pieDataSet.valueFormatter = PercentValueFormatter()
-    pieDataSet.valueTextSize = 20f
+        println(pieEntries.value)
 
-    AndroidView(
-        modifier = Modifier.fillMaxSize(),
-        factory = { context ->
-            PieChart(context).apply {
-                data = pieData
-                description.isEnabled = false
-                centerText = "Favourites"
-                setDrawCenterText(true)
-                setEntryLabelTextSize(10f)
-                animateY(3000)
-            }
-        }
+        pieEntries.value = listOf(
+        PieEntry(33f, "Paintings"),
+        PieEntry(33f, "Photograph"),
+        PieEntry(33f, "Architectural")
     )
+
+    if (pieEntries.value.isEmpty()) {
+        CircularProgressIndicator()
+    } else {
+        val pieDataSet = PieDataSet(pieEntries.value, "Pie Data Set").apply {
+            colors = ColorTemplate.COLORFUL_COLORS.toList()
+            xValuePosition = PieDataSet.ValuePosition.INSIDE_SLICE
+            yValuePosition = PieDataSet.ValuePosition.INSIDE_SLICE
+            valueFormatter = PercentValueFormatter()
+            valueTextSize = 22f
+        }
+
+        val pieData = PieData(pieDataSet)
+
+        AndroidView(
+            modifier = Modifier.fillMaxSize(),
+            factory = { context ->
+                PieChart(context).apply {
+                    data = pieData
+                    description.isEnabled = false
+                    centerText = "Favourites"
+                    setDrawCenterText(true)
+                    setEntryLabelTextSize(22f)
+                    animateY(2000)
+                }
+            }
+        )
+    }
 }
+
 
 
 //we used this class for formatting value (adding % sign)
