@@ -63,6 +63,12 @@ class UserViewModel (application: Application): AndroidViewModel(application)
         }
     }
 
+    fun setLoggedActive(userId: Int){
+        viewModelScope.launch {
+            userRepository.setLoggedActive(userId)
+        }
+    }
+
     /**
      * methods to manipulate user
      */

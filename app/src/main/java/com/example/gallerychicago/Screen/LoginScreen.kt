@@ -81,6 +81,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 //import com.stevdzasan.onetap.OneTapSignInState
 
 import com.example.gallerychicago.Data.GoogleUser
+import com.example.gallerychicago.Data.User
 import com.example.gallerychicago.Data.getUserFromTokenId
 import com.example.gallerychicago.googleLogin.OneTapSignInState
 //import com.stevdzasan.onetap.OneTapSignInStateSaver
@@ -222,16 +223,19 @@ fun LoginScreen(
             var user: GoogleUser? by remember { mutableStateOf(null) }
             OneTapSignInWithGoogle(
                 state = state,
-
                 rememberAccount = false,
                 clientId = "508519310831-5jou70a9oo3sgt4adi1e965e2u6692ph.apps.googleusercontent.com",  // Google Cloud Platform Client ID
 
                 onTokenIdReceived = { tokenId ->
                     user = getUserFromTokenId(tokenId)
                     println(user)
+                    val userEmail: String = user?.email.toString()
                     // deal with token id
                     println("LoginScreen, Token ID received: $tokenId")
                     // if log in successful, navigate to home
+                    userViewModel.addUser(email = userEmail, name = "gmail", birthday = null, password = "123")
+                    
+                    //userViewModel.setLoggedActive()
                     navController.navigate("Home")
                 },
                 onDialogDismissed = { message ->
