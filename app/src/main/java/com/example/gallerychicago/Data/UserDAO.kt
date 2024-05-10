@@ -49,6 +49,9 @@ interface UserDao
     @Query("UPDATE users SET isLoggedIn = true WHERE id = :userId")
     suspend fun loginUser(userId: Int)
 
+    // Update the loggedState using google login in
+    @Query("UPDATE users SET isLoggedIn = true WHERE email = :email")
+    suspend fun activeLogged(email: String)
 
     // log out
     @Query("UPDATE users SET isLoggedIn = false WHERE id = :userId")

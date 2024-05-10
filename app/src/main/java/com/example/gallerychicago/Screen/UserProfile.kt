@@ -266,6 +266,7 @@ fun UserProfile(navController: NavHostController, userViewModel: UserViewModel =
             Text("Go to my favorite list")
         }
 
+        Spacer(modifier = Modifier.height(10.dp))
         //Button to login out
         Button(onClick = {
             // This clears the back stack up to the 'loginScreen'
@@ -273,6 +274,14 @@ fun UserProfile(navController: NavHostController, userViewModel: UserViewModel =
             userViewModel.logoutUser()
         }) {
             Text("Log Out")
+        }
+
+        // Button to login in
+        Button(onClick = {
+            // This clears the back stack up to the 'loginScreen'
+            navController.navigate("loginScreen")
+        }) {
+            Text("Log in")
         }
 
         // Navigation bottom
