@@ -49,7 +49,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.credentials.CredentialManager
+import androidx.credentials.CustomCredential
 import androidx.credentials.GetCredentialRequest
+import androidx.credentials.GetCredentialResponse
+import androidx.credentials.PasswordCredential
+import androidx.credentials.PublicKeyCredential
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
@@ -195,6 +199,7 @@ fun GoogleSignInButton(navController: NavHostController)
     val coroutineScope = rememberCoroutineScope()
     val onClick: () -> Unit =
         {
+
             Toast.makeText(context, "Button clicked!", Toast.LENGTH_SHORT).show()
             val credentialManager = CredentialManager.create(context)
 
@@ -204,16 +209,22 @@ fun GoogleSignInButton(navController: NavHostController)
             val digest = md.digest(bytes)
             val hashedNonce = digest.fold("") {str, it -> str + "%02x".format(it)}
 
+
             // create GetGoogleIdOption object
             val googleIdOption: GetGoogleIdOption = GetGoogleIdOption.Builder()
                 .setFilterByAuthorizedAccounts(false)
-                .setServerClientId("508519310831-5jou70a9oo3sgt4adi1e965e2u6692ph.apps.googleusercontent.com")
+                .setServerClientId("508519310831-nopsdbceel62ku7j4c2khom0huetbuac.apps.googleusercontent.com")
                 .setNonce(hashedNonce)
                 .build()
+
+            println("instantiate a Google sign in request: $googleIdOption")
 
             val request: GetCredentialRequest = GetCredentialRequest.Builder()
                 .addCredentialOption(googleIdOption)
                 .build()
+
+            println("Credential has got: $request")
+
 
             coroutineScope.launch {
                 try {
@@ -221,29 +232,74 @@ fun GoogleSignInButton(navController: NavHostController)
                         request = request,
                         context = context,
                     )
+
+//                    val credential = result.credential
+//
+//                    when (credential) {
+//                        is PublicKeyCredential -> {
+//                            // Share responseJson such as a GetCredentialResponse on your server to
+//                            // validate and authenticate
+//                            val responseJson = credential.authenticationResponseJson
+//                        }
+//
+//                        is PasswordCredential -> {
+//                            // Send ID and password to your server to validate and authenticate.
+//                            val username = credential.id
+//                            val password = credential.password
+//                        }
+//
+//                        is CustomCredential -> {
+//                            if (credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
+//                                try {
+//                                    // Use googleIdTokenCredential and extract id to validate and
+//                                    // authenticate on your server.
+//                                    val googleIdTokenCredential = GoogleIdTokenCredential
+//                                        .createFrom(credential.data)
+//                                } catch (e: GoogleIdTokenParsingException) {
+//                                    Log.e(TAG, "Received an invalid google id token response", e)
+//                                }
+//                            } else {
+//                                // Catch any unrecognized custom credential type here.
+//                                Log.e(TAG, "Unexpected type of credential")
+//                            }
+//                        }
+//
+//                        else -> {
+//                            // Catch any unrecognized credential type here.
+//                            Log.e(TAG, "Unexpected type of credential")
+//                        }
+//                    }
                     val credential = result.credential
+
+                    println("The result is: $result")
 
                     val googleIdTokenCredential = GoogleIdTokenCredential
                         .createFrom(credential.data)
 
+                    println("The google TokenCredential: $googleIdTokenCredential")
                     val googleIdToken = googleIdTokenCredential.idToken
 
+
                     // Log and show success message
-                    Log.i("GoogleSignIn", googleIdToken)
+                    println("GoogleSignIn: $googleIdToken")
                     Toast.makeText(context, "You are signed in with Google", Toast.LENGTH_SHORT).show()
 
                     // Navigate to Home screen on success
                     navController.navigate("Home")
                 }catch (e: GetCredentialException) {
                     Toast.makeText(context, e.message, Toast.LENGTH_SHORT).show()
+                    println("Credential not found")
                 }catch(e: GoogleIdTokenParsingException){
                     Toast.makeText(context, e.message, Toast.LENGTH_SHORT).show()
+                    println("GoogleIdToken not found")
                 }
 
             }
+
+
         }
     Button(
-        onClick = {onClick},
+        onClick = {onClick()},
         modifier = Modifier.fillMaxWidth(),
         colors = ButtonDefaults.buttonColors(Color(0xFF952323)))
     {

@@ -61,12 +61,7 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-        // Google firebase database interface test area ()
-        //val firebaseConnection = CloudInterface()
-        //firebaseConnection.initializaDbRef()
-        //firebaseConnection.readUserInfo("wh.tenghe@gmail.com"){
-        //    println(it)
-        //}
+
 }
 
 @Preview(showBackground = true)
