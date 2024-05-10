@@ -49,6 +49,7 @@ interface UserDao
     @Query("UPDATE users SET isLoggedIn = true WHERE id = :userId")
     suspend fun loginUser(userId: Int)
 
+
     // log out
     @Query("UPDATE users SET isLoggedIn = false WHERE id = :userId")
     suspend fun logoutUser(userId: Int)

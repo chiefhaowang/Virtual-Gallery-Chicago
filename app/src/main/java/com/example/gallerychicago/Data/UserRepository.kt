@@ -45,9 +45,18 @@ class UserRepository(application: Application)
         return null
     }
 
+    suspend fun  setLoggedActive(userId: Int){
+        return userDao.loginUser(userId)
+    }
+
     // get user by id
     suspend fun getUserById(userId: Int):User? {
         return userDao.getUserById(userId)
+    }
+
+    // get user by email
+    suspend fun getUserByEmail(userEmail:String):User? {
+        return userDao.getUserByEmail(userEmail)
     }
 
     //get current user who's logged state is true
