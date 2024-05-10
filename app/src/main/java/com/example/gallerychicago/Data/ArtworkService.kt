@@ -13,11 +13,6 @@ interface ArtworkService {
         @Query("fields") fields: String
     ): ArtworkResponse
 
-//    @GET("artworks")
-//    suspend fun init(
-//        @Query("size") size: Int,
-//        @Query("fields") fields: String
-//    ): ArtworkResponse
 
     // get artworks by type and keywords
     @GET("artworks/search?")
@@ -34,10 +29,5 @@ interface ArtworkService {
         @Query("size") size: Int,
         @Query("fields") fields: String,
         @Query("q") title: String
-    ): ArtworkResponse
-
-    @GET("artworks/search")
-    fun searchArtworks(
-        @Query("params") params: String
     ): ArtworkResponse
 }

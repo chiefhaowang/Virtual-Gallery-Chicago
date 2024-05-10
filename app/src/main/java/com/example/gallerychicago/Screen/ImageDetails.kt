@@ -64,7 +64,6 @@ import retrofit2.converter.gson.GsonConverterFactory
 fun DisplayArtworkDetails(artworkId: Int, navController: NavHostController, userViewModel: UserViewModel) {
     var artworkDetails by remember { mutableStateOf<ArtworkDetailsResponse?>(null) }
     val cloudInterface = CloudInterface()
-    cloudInterface.initializaDbRef()
     val currentUser by userViewModel.currentUser.observeAsState()
     val email = currentUser?.email
 
@@ -125,7 +124,6 @@ fun ArtworkDetials(artworkDetails: ArtworkDetailsResponse, email: String) {
 
     //Cloud service
     val cloudInterface = CloudInterface()
-    cloudInterface.initializaDbRef()
     val likedArtwork = LikedArtwork(artworkId = artworkDetails.id)
     val favouriteArtwork = FavouriteArtwork(
         artworkId = artworkDetails.id,

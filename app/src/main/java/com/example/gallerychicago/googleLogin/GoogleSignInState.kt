@@ -6,7 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 
 @Stable
-class OneTapSignInState(open: Boolean = false) {
+class GoogleSignInState(open: Boolean = false) {
     var opened by mutableStateOf(open)
         private set
 

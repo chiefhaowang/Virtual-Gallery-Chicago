@@ -13,13 +13,7 @@ data class GoogleUser(
     val fullName: String?
 )
 
-/**
- * Use this function to extract [GoogleUser] information from a token id that you're
- * getting from One-Tap Sign in. The token id is usually valid for only one hour after
- * a successful authentication.
- * @return This function returns a [GoogleUser] object, or null if an exception occurred,
- * due to invalid token decoding, or because your token id has expired.
- * */
+
 fun getUserFromTokenId(tokenId: String): GoogleUser? {
     try {
         val jwt = JWT(tokenId)
@@ -30,10 +24,10 @@ fun getUserFromTokenId(tokenId: String): GoogleUser? {
             fullName = jwt.claims["name"]?.asString(),
         )
     } catch (e: Exception) {
-        Log.e("OneTapCompose", e.toString())
+        Log.e("Gallery", e.toString())
         return null
     } catch (e: DecodeException) {
-        Log.e("OneTapCompose", e.toString())
+        Log.e("Gallery", e.toString())
         return null
     }
 }

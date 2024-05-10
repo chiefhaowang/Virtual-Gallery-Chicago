@@ -70,9 +70,12 @@ import java.util.*
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun Registration(userViewModel: UserViewModel = viewModel(), navController: NavController) {
+    // Observing email availability state from ViewModel
     val emailAvailable by userViewModel.emailAvailable.observeAsState()
 
     val context = LocalContext.current
+
+    // Mutable state variables to hold user input for the registration form
     var username by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }

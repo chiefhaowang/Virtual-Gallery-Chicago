@@ -19,15 +19,11 @@ class CloudInterface {
     init {
         database = Firebase.database.reference
     }
-    fun initializaDbRef(){
-
-    }
 
     // delete the "." in email: google databse dont permit the special character in index
     fun userIdGenerator(email: String): String {
         return email.replace(".", "")
     }
-
 
     /** User Data Streaming
      function for user registration
