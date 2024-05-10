@@ -75,6 +75,7 @@ class UserViewModel (application: Application): AndroidViewModel(application)
         }
     }
 
+
     /**
      * methods to manipulate user
      */
@@ -100,8 +101,7 @@ class UserViewModel (application: Application): AndroidViewModel(application)
             if (!userRepository.isEmailExists(email)) {
                 val newUser = User(name = name, email = email, password = password, birthday = birthday, description = null, isLoggedIn = false)
                 userRepository.insertUser(newUser)
-                // upload data to google firebase
-                // cloudInterface.initializaDbRef()
+
                 println(email)
                 cloudInterface.initializeUserGoogleLogin(email){}
                 emailAvailable.postValue(true)  // email doesn't exist

@@ -1,6 +1,5 @@
 package com.example.gallerychicago.Screen
 
-import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
 import android.credentials.GetCredentialException
@@ -8,38 +7,29 @@ import android.os.Build
 import android.provider.Settings
 import android.util.Log
 import android.widget.Toast
-import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.LineHeightStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.Alignment
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -51,7 +41,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -59,12 +48,8 @@ import androidx.credentials.CredentialManager
 import androidx.credentials.CustomCredential
 import androidx.credentials.GetCredentialRequest
 import androidx.credentials.GetCredentialResponse
-import androidx.credentials.PasswordCredential
-import androidx.credentials.PublicKeyCredential
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
-import com.example.gallerychicago.Data.ArtworkViewModel
 import com.example.gallerychicago.Data.UserViewModel
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
@@ -75,24 +60,13 @@ import java.util.UUID
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.Stable
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
-//import com.stevdzasan.onetap.OneTapSignInState
-
 import com.example.gallerychicago.Data.GoogleUser
 import com.example.gallerychicago.Data.User
 import com.example.gallerychicago.Data.getUserFromTokenId
-import com.example.gallerychicago.googleLogin.OneTapSignInState
-//import com.stevdzasan.onetap.OneTapSignInStateSaver
-//import com.stevdzasan.onetap.openGoogleAccountSettings
+import com.example.gallerychicago.googleLogin.GoogleSignInState
 
-// from oneTop project
-//import com.stevdzasan.onetap.OneTapSignInWithGoogle
-//import com.stevdzasan.onetap.getUserFromTokenId
-//import com.stevdzasan.onetap.handleCredentialsNotAvailable
-//import com.stevdzasan.onetap.handleSignIn
-//import com.stevdzasan.onetap.rememberOneTapSignInState
 
 
 
@@ -221,7 +195,7 @@ fun LoginScreen(
 
             val state = rememberOneTapSignInState()
             var user: GoogleUser? by remember { mutableStateOf(null) }
-            OneTapSignInWithGoogle(
+            signInWithGoogle(
                 state = state,
                 rememberAccount = false,
                 clientId = "508519310831-5jou70a9oo3sgt4adi1e965e2u6692ph.apps.googleusercontent.com", // Google Cloud Platform Client ID
@@ -229,6 +203,7 @@ fun LoginScreen(
                     val user = getUserFromTokenId(tokenId)
                     println(user)
                     val userEmail: String = user?.email.toString()
+
                     // print token
                     println("LoginScreen, Token ID received: $tokenId")
 
@@ -245,6 +220,7 @@ fun LoginScreen(
                             println("Login failed for user with email $userEmail")
                         }
                     }
+
                 },
 
                 onDialogDismissed = { message ->
@@ -260,34 +236,26 @@ fun LoginScreen(
             ) {
                 Text("Login in with Google")
             }
-            /**Button(
-                onClick = {},
-                modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(Color(0xFF952323)),
-            ) {
-                Text("Login in with Google")
-            }*/
-
         }
     }
 }
 
 @Composable
-fun rememberOneTapSignInState(): OneTapSignInState {
+fun rememberOneTapSignInState(): GoogleSignInState {
     return rememberSaveable(
-        saver = OneTapSignInStateSaver
-    ) { OneTapSignInState() }
+        saver = GoogleSignInStateSaver
+    ) { GoogleSignInState() }
 }
 
-private val OneTapSignInStateSaver: Saver<OneTapSignInState, Boolean> = Saver(
+private val GoogleSignInStateSaver: Saver<GoogleSignInState, Boolean> = Saver(
     save = { state -> state.opened },
-    restore = { opened -> OneTapSignInState(open = opened) },
+    restore = { opened -> GoogleSignInState(open = opened) },
 )
 
 //
 @Composable
-fun OneTapSignInWithGoogle(
-    state: OneTapSignInState,
+fun signInWithGoogle(
+    state: GoogleSignInState,
     clientId: String,
     rememberAccount: Boolean = true,
     nonce: String? = null,
@@ -333,7 +301,7 @@ fun OneTapSignInWithGoogle(
                     )
                 } catch (e: androidx.credentials.exceptions.GetCredentialException) {
                     if (e.message != null) {
-                        if (e.message!!.contains("No credentials available")) {
+                        if (e.message!!.contains("No credentials")) {
                             handleCredentialsNotAvailable(
                                 context = context,
                                 state = state,
@@ -347,14 +315,14 @@ fun OneTapSignInWithGoogle(
                     } else {
                         try {
                             val errorMessage = if (e.message != null) {
-                                if (e.message!!.contains("activity is cancelled by the user.")) {
+                                if (e.message!!.contains("User cancelled.")) {
                                     "Dialog Closed."
-                                } else if (e.message!!.contains("Caller has been temporarily blocked")) {
-                                    "Sign in has been Temporarily Blocked due to too many Closed Prompts."
+                                } else if (e.message!!.contains("Blocked")) {
+                                    "Sign in Blocked."
                                 } else {
                                     e.message.toString()
                                 }
-                            } else "Unknown Error."
+                            } else "Error."
                             onDialogDismissed(errorMessage)
                             state.close()
                         } catch (e: Exception) {
@@ -364,7 +332,7 @@ fun OneTapSignInWithGoogle(
                     }
                 } catch (e: Exception) {
                     if (e.message != null) {
-                        if (e.message!!.contains("No credentials available")) {
+                        if (e.message!!.contains("No credentials")) {
                             handleCredentialsNotAvailable(
                                 context = context,
                                 state = state,
@@ -387,7 +355,7 @@ fun OneTapSignInWithGoogle(
 
 private suspend fun handleCredentialsNotAvailable(
     context: Context,
-    state: OneTapSignInState,
+    state: GoogleSignInState,
     credentialManager: CredentialManager,
     clientId: String,
     nonce: String?,
@@ -422,18 +390,18 @@ private suspend fun handleCredentialsNotAvailable(
         )
     } catch (e: androidx.credentials.exceptions.GetCredentialException) {
         try {
-            if (e.message!!.contains("No credentials available")) {
+            if (e.message!!.contains("No credentials")) {
                 openGoogleAccountSettings(context = context)
             }
             val errorMessage = if (e.message != null) {
-                if (e.message!!.contains("activity is cancelled by the user.")) {
+                if (e.message!!.contains("User cancelled.")) {
                     "Dialog Closed."
-                } else if (e.message!!.contains("Caller has been temporarily blocked")) {
-                    "Sign in has been Temporarily Blocked due to too many Closed Prompts."
+                } else if (e.message!!.contains("Blocked")) {
+                    "Sign in Blocked."
                 } else {
                     e.message.toString()
                 }
-            } else "Unknown Error."
+            } else "Error."
 
             onDialogDismissed(errorMessage)
             state.close()
@@ -476,12 +444,12 @@ private fun handleSignIn(
                     onDialogDismissed("Invalid Google tokenId response: ${e.message}")
                 }
             } else {
-                onDialogDismissed("Unexpected Type of Credential.")
+                onDialogDismissed("Unexpected Credential Type.")
             }
         }
 
         else -> {
-            onDialogDismissed("Unexpected Type of Credential.")
+            onDialogDismissed("Unexpected Credential Type.")
         }
     }
 }

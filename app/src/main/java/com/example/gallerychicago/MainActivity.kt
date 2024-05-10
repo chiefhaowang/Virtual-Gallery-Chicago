@@ -55,8 +55,9 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 )
                 {
-                    BottomNavigationBar(viewModel = artworkViewModel, userViewModel =userViewModel )
-                    //ReportScreen(navController, userViewModel)
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                        BottomNavigationBar(viewModel = artworkViewModel, userViewModel =userViewModel )
+                    }
                 }
             }
         }

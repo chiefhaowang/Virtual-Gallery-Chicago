@@ -99,34 +99,6 @@ fun ReportScreen(navController: NavHostController, userViewModel: UserViewModel)
                 Spacer(modifier = Modifier.height(30.dp))
             }
         }
-
-//        Column(
-//            modifier = Modifier.fillMaxWidth().background(MaterialTheme.colorScheme.surface),
-//            horizontalAlignment = Alignment.CenterHorizontally,
-//        ) {
-//            CenteredBlackText("Most Favoured Artwork")
-//
-//            Text(
-//                text = "Improvisation No. 30 (Cannons)",
-//                color = Color(10, 10, 10),
-//                style = TextStyle(
-//                    fontFamily = FontFamily.Serif,
-//                    fontSize = 15.sp,
-//                    textAlign = TextAlign.Center
-//                )
-//            )
-//
-//            Image(
-//                painter = rememberAsyncImagePainter(
-//                    model = "https://www.artic.edu/iiif/2/9e00e226-9264-cda0-2893-685e0ca5b285/full/200,/0/default.jpg"
-//                ),
-//                contentDescription = "Improvisation No. 30 (Cannons)",
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .height(400.dp)
-//                    .padding(16.dp)
-//            )
-//        }
     }
 }
 

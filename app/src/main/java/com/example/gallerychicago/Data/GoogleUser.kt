@@ -13,9 +13,11 @@ data class GoogleUser(
     val fullName: String?
 )
 
+
 /**
  * Extract important information from token, and return a Google user object
  * */
+
 fun getUserFromTokenId(tokenId: String): GoogleUser? {
     try {
         val jwt = JWT(tokenId)
@@ -26,10 +28,10 @@ fun getUserFromTokenId(tokenId: String): GoogleUser? {
             fullName = jwt.claims["name"]?.asString(),
         )
     } catch (e: Exception) {
-        Log.e("google token", e.toString())
+        Log.e("Gallery", e.toString())
         return null
     } catch (e: DecodeException) {
-        Log.e("google token", e.toString())
+        Log.e("Gallery", e.toString())
         return null
     }
 }

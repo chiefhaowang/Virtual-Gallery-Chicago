@@ -52,22 +52,17 @@ android {
 }
 
 dependencies {
+//    dependencies {
+//        implementation("com.github.stevdza-san:OneTapCompose:1.0.12")
+//    }
 
-    //google quick login in: github project
-    dependencies {
-        implementation("com.github.stevdza-san:OneTapCompose:1.0.12")
-    }
-    // JWT
-    implementation("com.auth0.android:jwtdecode:2.0.2")
-    implementation("com.google.code.gson:gson:2.10.1")
     // google credentials
     implementation("androidx.credentials:credentials:1.3.0-alpha03")
 
     // sign in with google
-    //implementation ("androidx.credentials:credentials:<latest version>")
-    //implementation ("androidx.credentials:credentials-play-services-auth:<latest version>")
     implementation ("com.google.android.libraries.identity.googleid:googleid:1.1.0")
-
+    implementation("com.auth0.android:jwtdecode:2.0.2")
+    implementation("com.google.code.gson:gson:2.10.1")
     implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")

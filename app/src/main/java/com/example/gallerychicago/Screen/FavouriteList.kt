@@ -140,7 +140,6 @@ fun FavouriteArtworkItem(artwork: FavouriteArtwork, index: Int, navController: N
 // Read cloud user data and callback a favourite artworks list
 fun fetchCloudData(email: String, callback: (MutableList<FavouriteArtwork>?) -> Unit) {
     val cloudInterface = CloudInterface()
-    cloudInterface.initializaDbRef()
 
     cloudInterface.readUserInfo(email) { userInfo ->
         if (userInfo != null) {

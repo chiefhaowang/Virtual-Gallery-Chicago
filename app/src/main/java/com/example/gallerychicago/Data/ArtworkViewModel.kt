@@ -123,31 +123,6 @@ class ArtworkViewModel(application: Application) : AndroidViewModel(application)
         }
     }
 
-//    /**
-//     * Fetch all artworks from the API and store them in the database.
-//     * @param size The number of artworks to fetch.
-//     */
-//    private suspend fun fetchAll(size: Int = 100) {
-//        viewModelScope.launch {
-//            try {
-//                Log.i("Fetching", "Fetching...")
-//                val response = cRepository.fetchAll(size)
-//                Log.d("Response", response.toString())
-//                response.artworks.filter {
-//                    it.id != null
-//                    it.imageId != null
-//                }.forEach { artwork ->
-//                    insertArtwork(artwork)
-//                    Log.i("Fetch Artwork", artwork.toString())
-//                }
-//                allArtworks.value = cRepository.getAllArtworks()
-//            } catch (e: Exception) {
-//                Log.e("Error ", "Response failed" + e.message)
-//                e.printStackTrace()
-//            }
-//        }
-//    }
-
     /**
      * Fetch artworks for all specified types.
      * @param types The list of type IDs for which artworks will be fetched.
