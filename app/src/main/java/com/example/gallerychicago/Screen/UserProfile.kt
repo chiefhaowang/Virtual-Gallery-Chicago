@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.ui.res.painterResource
@@ -261,6 +262,7 @@ fun UserProfile(navController: NavHostController, userViewModel: UserViewModel =
             onClick = {
                 println("Button clicked!")
                 navController.navigate("FavouriteList") },
+            modifier = Modifier.width(200.dp),
             colors = ButtonDefaults.buttonColors(Color(0xFF952323)))
         {
             Text("Go to my favorite list")
@@ -272,7 +274,9 @@ fun UserProfile(navController: NavHostController, userViewModel: UserViewModel =
             // This clears the back stack up to the 'loginScreen'
             navController.navigate("loginScreen")
             userViewModel.logoutUser()
-        }) {
+        },
+            modifier = Modifier.width(200.dp)
+        ) {
             Text("Log Out")
         }
 
@@ -280,7 +284,8 @@ fun UserProfile(navController: NavHostController, userViewModel: UserViewModel =
         Button(onClick = {
             // This clears the back stack up to the 'loginScreen'
             navController.navigate("loginScreen")
-        }) {
+        },
+            modifier = Modifier.width(200.dp)) {
             Text("Log in")
         }
 
