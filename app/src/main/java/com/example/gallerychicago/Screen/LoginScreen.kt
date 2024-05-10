@@ -94,6 +94,7 @@ import com.example.gallerychicago.googleLogin.OneTapSignInState
 //import com.stevdzasan.onetap.rememberOneTapSignInState
 
 
+
 @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
 fun LoginScreen(
@@ -216,15 +217,15 @@ fun LoginScreen(
             // Button to choose to login in with google account
             Spacer(modifier = Modifier.height(15.dp))
 
-            /**
-             *  Google One-Tap Login State
-             */
+
             val state = rememberOneTapSignInState()
             var user: GoogleUser? by remember { mutableStateOf(null) }
             OneTapSignInWithGoogle(
                 state = state,
+
                 rememberAccount = false,
                 clientId = "508519310831-5jou70a9oo3sgt4adi1e965e2u6692ph.apps.googleusercontent.com",  // Google Cloud Platform Client ID
+
                 onTokenIdReceived = { tokenId ->
                     user = getUserFromTokenId(tokenId)
                     println(user)
