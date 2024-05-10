@@ -230,7 +230,7 @@ fun GoogleSignInButton(navController: NavHostController)
             // create GetGoogleIdOption object
             val googleIdOption: GetGoogleIdOption = GetGoogleIdOption.Builder()
                 .setFilterByAuthorizedAccounts(false)
-                .setServerClientId("508519310831-nopsdbceel62ku7j4c2khom0huetbuac.apps.googleusercontent.com")
+                .setServerClientId("513800573110-dbileqgqt86u0rkdvptsfe6ravq1eapf.apps.googleusercontent.com")
                 .setNonce(hashedNonce)
                 .build()
 
@@ -250,42 +250,7 @@ fun GoogleSignInButton(navController: NavHostController)
                         context = context,
                     )
 
-//                    val credential = result.credential
-//
-//                    when (credential) {
-//                        is PublicKeyCredential -> {
-//                            // Share responseJson such as a GetCredentialResponse on your server to
-//                            // validate and authenticate
-//                            val responseJson = credential.authenticationResponseJson
-//                        }
-//
-//                        is PasswordCredential -> {
-//                            // Send ID and password to your server to validate and authenticate.
-//                            val username = credential.id
-//                            val password = credential.password
-//                        }
-//
-//                        is CustomCredential -> {
-//                            if (credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
-//                                try {
-//                                    // Use googleIdTokenCredential and extract id to validate and
-//                                    // authenticate on your server.
-//                                    val googleIdTokenCredential = GoogleIdTokenCredential
-//                                        .createFrom(credential.data)
-//                                } catch (e: GoogleIdTokenParsingException) {
-//                                    Log.e(TAG, "Received an invalid google id token response", e)
-//                                }
-//                            } else {
-//                                // Catch any unrecognized custom credential type here.
-//                                Log.e(TAG, "Unexpected type of credential")
-//                            }
-//                        }
-//
-//                        else -> {
-//                            // Catch any unrecognized credential type here.
-//                            Log.e(TAG, "Unexpected type of credential")
-//                        }
-//                    }
+
                     val credential = result.credential
 
                     println("The result is: $result")
@@ -312,7 +277,6 @@ fun GoogleSignInButton(navController: NavHostController)
                 }
 
             }
-
 
         }
     Button(
