@@ -58,8 +58,8 @@ fun BottomNavigationBar(viewModel: ArtworkViewModel, userViewModel: UserViewMode
     ) { paddingValues ->
         NavHost(
             navController,
-            startDestination = "loginScreen",
-            //startDestination = Routes.ReportScreen.value,
+            //startDestination = "loginScreen",
+            startDestination = Routes.Home.value,
             Modifier.padding(paddingValues)
         ) {
             composable(Routes.Home.value) {

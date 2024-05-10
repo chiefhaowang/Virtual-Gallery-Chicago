@@ -72,6 +72,7 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.3.0")
     implementation ("androidx.navigation:navigation-compose:2.7.7")
     implementation("androidx.compose.material:material:1.6.3")
+    implementation("androidx.compose.material:material-icons-extended:1.3.1")
     implementation("com.google.firebase:firebase-database:20.3.1")
     testImplementation("junit:junit:4.13.2")
     implementation("androidx.room:room-runtime:2.6.1")
@@ -95,4 +96,8 @@ dependencies {
     implementation("androidx.compose.runtime:runtime-livedata:1.6.1")
     implementation("com.jakewharton.timber:timber:5.0.1")
     implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
+
+    implementation ("androidx.credentials:credentials:<latest version>")
+    implementation ("androidx.credentials:credentials-play-services-auth:<latest version>")
+    implementation ("com.google.android.libraries.identity.googleid:googleid:<latest version>")
 }

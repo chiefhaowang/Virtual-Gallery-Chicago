@@ -53,9 +53,15 @@ import android.widget.Toast
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.gallerychicago.Data.UserViewModel
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.*
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.navigation.NavController
 import java.text.SimpleDateFormat
 import java.time.Instant
@@ -73,6 +79,8 @@ fun Registration(userViewModel: UserViewModel = viewModel(), navController: NavC
     var confirmPassword by remember { mutableStateOf("") }
     var dateOfBirth by remember { mutableStateOf("") }
     var showDatePicker by remember { mutableStateOf(false) }
+    var passwordVisible by remember { mutableStateOf(false) }
+    var confirmPasswordVisible by remember { mutableStateOf(false) }
 
     if (showDatePicker) {
         DisplayDatePicker { selectedDate ->
@@ -90,18 +98,16 @@ fun Registration(userViewModel: UserViewModel = viewModel(), navController: NavC
         Box(  //for red background
             modifier = Modifier
                 .fillMaxWidth()
-                .height(100.dp) // height
                 .background(Color(0xFF952323))
         ) {
-            Text(//title
-                "Register",
-                color = Color(255,255,255),
-                style = TextStyle(
-                    fontFamily = FontFamily.Serif,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 25.sp
-                ),
-                modifier = Modifier.align(Alignment.Center) //
+            Text(
+                text = "Register",
+                color = MaterialTheme.colorScheme.onPrimary,
+                style = MaterialTheme.typography.headlineLarge,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(color = MaterialTheme.colorScheme.primary)
             )
         }
         Spacer(modifier = Modifier.height(15.dp))
@@ -131,14 +137,34 @@ fun Registration(userViewModel: UserViewModel = viewModel(), navController: NavC
                 value = password,
                 onValueChange = { password = it },
                 label = { Text("Password") },
-                visualTransformation = PasswordVisualTransformation()
+                visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                trailingIcon = {
+                    val image = if (passwordVisible)
+                        Icons.Filled.Visibility
+                    else Icons.Filled.VisibilityOff
+
+                    IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                        Icon(imageVector = image, contentDescription = "Toggle password visibility")
+                    }
+                }
             )
             Spacer(modifier = Modifier.height(15.dp))
             TextField(
                 value = confirmPassword,
                 onValueChange = { confirmPassword = it },
-                label = { Text("Confirm Password") } ,
-                visualTransformation = PasswordVisualTransformation()
+                label = { Text("Confirm Password") },
+                visualTransformation = if (confirmPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                trailingIcon = {
+                    val image = if (confirmPasswordVisible)
+                        Icons.Filled.Visibility
+                    else Icons.Filled.VisibilityOff
+
+                    IconButton(onClick = { confirmPasswordVisible = !confirmPasswordVisible }) {
+                        Icon(imageVector = image, contentDescription = "Toggle confirm password visibility")
+                    }
+                }
             )
             Spacer(modifier = Modifier.height(15.dp))
             // Date of Birth TextField that triggers DatePickerDialog

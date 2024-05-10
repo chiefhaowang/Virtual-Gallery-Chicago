@@ -18,6 +18,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
@@ -47,9 +49,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.credentials.CredentialManager
+import androidx.credentials.CustomCredential
 import androidx.credentials.GetCredentialRequest
+import androidx.credentials.GetCredentialResponse
+import androidx.credentials.PasswordCredential
+import androidx.credentials.PublicKeyCredential
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
@@ -61,8 +69,11 @@ import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingExcept
 import kotlinx.coroutines.launch
 import java.security.MessageDigest
 import java.util.UUID
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 
 
+@RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
 fun LoginScreen(
     navController: NavHostController,
@@ -74,6 +85,7 @@ fun LoginScreen(
     val context = LocalContext.current
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var passwordVisible by remember { mutableStateOf(false) }
 
     fun validateLoginForm(): Boolean {
         if (email.isBlank() || password.isBlank()) {
@@ -134,9 +146,19 @@ fun LoginScreen(
             // field for password
             TextField(
                 value = password,
-                onValueChange = {password = it},
+                onValueChange = { password = it },
                 label = { Text("Password") },
-                //visualTransformation = PasswordVisualTransformation()
+                visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                trailingIcon = {
+                    val image = if (passwordVisible)
+                        Icons.Filled.Visibility
+                    else Icons.Filled.VisibilityOff
+
+                    IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                        Icon(imageVector = image, contentDescription = "Toggle password visibility")
+                    }
+                }
             )
             Spacer(modifier = Modifier.height(30.dp))
 
@@ -194,6 +216,7 @@ fun GoogleSignInButton(navController: NavHostController)
     val coroutineScope = rememberCoroutineScope()
     val onClick: () -> Unit =
         {
+
             Toast.makeText(context, "Button clicked!", Toast.LENGTH_SHORT).show()
             val credentialManager = CredentialManager.create(context)
 
@@ -203,16 +226,22 @@ fun GoogleSignInButton(navController: NavHostController)
             val digest = md.digest(bytes)
             val hashedNonce = digest.fold("") {str, it -> str + "%02x".format(it)}
 
+
             // create GetGoogleIdOption object
             val googleIdOption: GetGoogleIdOption = GetGoogleIdOption.Builder()
                 .setFilterByAuthorizedAccounts(false)
-                .setServerClientId("508519310831-5jou70a9oo3sgt4adi1e965e2u6692ph.apps.googleusercontent.com")
+                .setServerClientId("513800573110-dbileqgqt86u0rkdvptsfe6ravq1eapf.apps.googleusercontent.com")
                 .setNonce(hashedNonce)
                 .build()
+
+            println("instantiate a Google sign in request: $googleIdOption")
 
             val request: GetCredentialRequest = GetCredentialRequest.Builder()
                 .addCredentialOption(googleIdOption)
                 .build()
+
+            println("Credential has got: $request")
+
 
             coroutineScope.launch {
                 try {
@@ -220,29 +249,38 @@ fun GoogleSignInButton(navController: NavHostController)
                         request = request,
                         context = context,
                     )
+
+
                     val credential = result.credential
+
+                    println("The result is: $result")
 
                     val googleIdTokenCredential = GoogleIdTokenCredential
                         .createFrom(credential.data)
 
+                    println("The google TokenCredential: $googleIdTokenCredential")
                     val googleIdToken = googleIdTokenCredential.idToken
 
+
                     // Log and show success message
-                    Log.i("GoogleSignIn", googleIdToken)
+                    println("GoogleSignIn: $googleIdToken")
                     Toast.makeText(context, "You are signed in with Google", Toast.LENGTH_SHORT).show()
 
                     // Navigate to Home screen on success
                     navController.navigate("Home")
                 }catch (e: GetCredentialException) {
                     Toast.makeText(context, e.message, Toast.LENGTH_SHORT).show()
+                    println("Credential not found")
                 }catch(e: GoogleIdTokenParsingException){
                     Toast.makeText(context, e.message, Toast.LENGTH_SHORT).show()
+                    println("GoogleIdToken not found")
                 }
 
             }
+
         }
     Button(
-        onClick = {onClick},
+        onClick = {onClick()},
         modifier = Modifier.fillMaxWidth(),
         colors = ButtonDefaults.buttonColors(Color(0xFF952323)))
     {
