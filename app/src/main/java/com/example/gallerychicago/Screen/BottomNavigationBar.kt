@@ -82,7 +82,7 @@ fun BottomNavigationBar(viewModel: ArtworkViewModel, userViewModel: UserViewMode
                 DisplayFavouriteList(navController, userViewModel)
             }
             composable("loginScreen") {
-                LoginScreen(navController, userViewModel, viewModel)
+                LoginScreen(navController, userViewModel)
             }
             composable("Registration") {
                 Registration(userViewModel, navController)

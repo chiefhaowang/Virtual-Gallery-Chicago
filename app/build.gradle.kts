@@ -52,6 +52,14 @@ android {
 }
 
 dependencies {
+
+    //google quick login in: github project
+    dependencies {
+        implementation("com.github.stevdza-san:OneTapCompose:1.0.12")
+    }
+    // JWT
+    implementation("com.auth0.android:jwtdecode:2.0.2")
+    implementation("com.google.code.gson:gson:2.10.1")
     // google credentials
     implementation("androidx.credentials:credentials:1.3.0-alpha03")
 
