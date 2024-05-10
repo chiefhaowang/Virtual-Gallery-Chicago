@@ -63,6 +63,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
 import com.example.gallerychicago.Data.GoogleUser
+import com.example.gallerychicago.Data.User
 import com.example.gallerychicago.Data.getUserFromTokenId
 import com.example.gallerychicago.googleLogin.GoogleSignInState
 
@@ -197,24 +198,36 @@ fun LoginScreen(
             signInWithGoogle(
                 state = state,
                 rememberAccount = false,
-                clientId = "508519310831-5jou70a9oo3sgt4adi1e965e2u6692ph.apps.googleusercontent.com",  // Google Cloud Platform Client ID
-
+                clientId = "508519310831-5jou70a9oo3sgt4adi1e965e2u6692ph.apps.googleusercontent.com", // Google Cloud Platform Client ID
                 onTokenIdReceived = { tokenId ->
-                    user = getUserFromTokenId(tokenId)
+                    val user = getUserFromTokenId(tokenId)
                     println(user)
                     val userEmail: String = user?.email.toString()
-                    // deal with token id
+
+                    // print token
                     println("LoginScreen, Token ID received: $tokenId")
-                    // if log in successful, navigate to home
+
+                    // add user to database
                     userViewModel.addUser(email = userEmail, name = "gmail", birthday = null, password = "123")
 
-                    //userViewModel.setLoggedActive()
-                    navController.navigate("Home")
+                    // login in
+                    userViewModel.loginUser(email = userEmail, password = "123") { loggedInUser ->
+                        if (loggedInUser != null) {
+                            println("Logged in user: $loggedInUser")
+                            // navigate to Home page
+                            navController.navigate("Home")
+                        } else {
+                            println("Login failed for user with email $userEmail")
+                        }
+                    }
+
                 },
+
                 onDialogDismissed = { message ->
-                    Log.d("LoginScreen", "One-Tap dialog dismissed: $message")
+                    Log.d("LoginScreen", "dismissed: $message")
                 }
             )
+
             // Button to trigger google login in
             Button(
                 onClick = { state.open() },
@@ -438,109 +451,5 @@ private fun handleSignIn(
         else -> {
             onDialogDismissed("Unexpected Credential Type.")
         }
-    }
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-@RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
-@Composable
-fun GoogleSignInButton(navController: NavHostController)
-{
-    val context = LocalContext.current
-    val coroutineScope = rememberCoroutineScope()
-    val onClick: () -> Unit =
-        {
-
-            Toast.makeText(context, "Button clicked!", Toast.LENGTH_SHORT).show()
-            val credentialManager = CredentialManager.create(context)
-
-            val rawNonce = UUID.randomUUID().toString()
-            val bytes = rawNonce.toByteArray()
-            val md = MessageDigest.getInstance("SHA-256")
-            val digest = md.digest(bytes)
-            val hashedNonce = digest.fold("") {str, it -> str + "%02x".format(it)}
-
-
-            // create GetGoogleIdOption object
-            val googleIdOption: GetGoogleIdOption = GetGoogleIdOption.Builder()
-                .setFilterByAuthorizedAccounts(false)
-                .setServerClientId("513800573110-dbileqgqt86u0rkdvptsfe6ravq1eapf.apps.googleusercontent.com")
-                .setNonce(hashedNonce)
-                .build()
-
-            println("instantiate a Google sign in request: $googleIdOption")
-
-            val request: GetCredentialRequest = GetCredentialRequest.Builder()
-                .addCredentialOption(googleIdOption)
-                .build()
-
-            println("Credential has got: $request")
-
-
-            coroutineScope.launch {
-                try {
-                    val result = credentialManager.getCredential(
-                        request = request,
-                        context = context,
-                    )
-
-
-                    val credential = result.credential
-
-                    println("The result is: $result")
-
-                    val googleIdTokenCredential = GoogleIdTokenCredential
-                        .createFrom(credential.data)
-
-                    println("The google TokenCredential: $googleIdTokenCredential")
-                    val googleIdToken = googleIdTokenCredential.idToken
-
-
-                    // Log and show success message
-                    println("GoogleSignIn: $googleIdToken")
-                    Toast.makeText(context, "You are signed in with Google", Toast.LENGTH_SHORT).show()
-
-                    // Navigate to Home screen on success
-                    navController.navigate("Home")
-                }catch (e: GetCredentialException) {
-                    Toast.makeText(context, e.message, Toast.LENGTH_SHORT).show()
-                    println("Credential not found")
-                }catch(e: GoogleIdTokenParsingException){
-                    Toast.makeText(context, e.message, Toast.LENGTH_SHORT).show()
-                    println("GoogleIdToken not found")
-                }
-
-            }
-
-        }
-    Button(
-        onClick = {onClick()},
-        modifier = Modifier.fillMaxWidth(),
-        colors = ButtonDefaults.buttonColors(Color(0xFF952323)))
-    {
-        Text("Login in with Google")
     }
 }

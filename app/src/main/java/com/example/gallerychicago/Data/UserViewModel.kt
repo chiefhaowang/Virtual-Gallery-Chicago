@@ -69,6 +69,13 @@ class UserViewModel (application: Application): AndroidViewModel(application)
         }
     }
 
+    fun getUserByEmail(email: String) {
+        viewModelScope.launch {
+            userRepository.getUserByEmail(email)
+        }
+    }
+
+
     /**
      * methods to manipulate user
      */
@@ -94,8 +101,9 @@ class UserViewModel (application: Application): AndroidViewModel(application)
             if (!userRepository.isEmailExists(email)) {
                 val newUser = User(name = name, email = email, password = password, birthday = birthday, description = null, isLoggedIn = false)
                 userRepository.insertUser(newUser)
+
                 println(email)
-                cloudInterface.initializeUser(email)
+                cloudInterface.initializeUserGoogleLogin(email){}
                 emailAvailable.postValue(true)  // email doesn't exist
             } else {
                 emailAvailable.postValue(false)  // email exists in database

@@ -14,6 +14,10 @@ data class GoogleUser(
 )
 
 
+/**
+ * Extract important information from token, and return a Google user object
+ * */
+
 fun getUserFromTokenId(tokenId: String): GoogleUser? {
     try {
         val jwt = JWT(tokenId)

@@ -61,7 +61,7 @@ fun ReportScreen(navController: NavHostController, userViewModel: UserViewModel)
     val email = currentUser?.email
     val pieEntries = remember { mutableStateOf<List<PieEntry>>(emptyList()) }
 
-    LaunchedEffect(email) {
+    LaunchedEffect(Unit) {
         if (email != null) {
             CloudInterface().readUserFavourite(email) { entries ->
                 if (entries != null) {
@@ -109,7 +109,7 @@ fun PieChartComponent(entries: List<PieEntry>) {
         xValuePosition = PieDataSet.ValuePosition.INSIDE_SLICE
         yValuePosition = PieDataSet.ValuePosition.INSIDE_SLICE
         valueFormatter = PercentValueFormatter()
-        valueTextSize = 40f
+        valueTextSize = 30f
     }
     val pieData = PieData(pieDataSet)
     AndroidView(
