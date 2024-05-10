@@ -96,4 +96,8 @@ dependencies {
     implementation("androidx.compose.runtime:runtime-livedata:1.6.1")
     implementation("com.jakewharton.timber:timber:5.0.1")
     implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
+
+    implementation ("androidx.credentials:credentials:<latest version>")
+    implementation ("androidx.credentials:credentials-play-services-auth:<latest version>")
+    implementation ("com.google.android.libraries.identity.googleid:googleid:<latest version>")
 }
