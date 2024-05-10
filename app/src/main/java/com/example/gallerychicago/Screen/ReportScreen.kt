@@ -90,7 +90,7 @@ fun ReportScreen(navController: NavHostController, userViewModel: UserViewModel)
         Column(
             modifier = Modifier.fillMaxWidth().background(MaterialTheme.colorScheme.surface),
         ) {
-            CenteredBlackText("My favourite Artwork Category")
+            CenteredBlackText("My Favourite Artwork Category")
 
             if (email != null && pieEntries.value.isNotEmpty()) {
                 PieChartComponent(pieEntries.value)

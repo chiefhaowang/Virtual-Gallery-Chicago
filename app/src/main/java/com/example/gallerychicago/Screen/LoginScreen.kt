@@ -82,6 +82,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 
 import com.example.gallerychicago.Data.GoogleUser
 import com.example.gallerychicago.Data.User
+import com.example.gallerychicago.Data.UserRepository
 import com.example.gallerychicago.Data.getUserFromTokenId
 import com.example.gallerychicago.googleLogin.OneTapSignInState
 //import com.stevdzasan.onetap.OneTapSignInStateSaver
@@ -234,6 +235,8 @@ fun LoginScreen(
                     println("LoginScreen, Token ID received: $tokenId")
                     // if log in successful, navigate to home
                     userViewModel.addUser(email = userEmail, name = "gmail", birthday = null, password = "123")
+
+
                     
                     //userViewModel.setLoggedActive()
                     navController.navigate("Home")
