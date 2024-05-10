@@ -1,8 +1,11 @@
 package com.example.gallerychicago.Screen
 
 import android.content.ContentValues.TAG
+import android.content.Context
+import android.content.Intent
 import android.credentials.GetCredentialException
 import android.os.Build
+import android.provider.Settings
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -73,17 +76,22 @@ import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
-import com.stevdzasan.onetap.OneTapSignInState
+import androidx.compose.runtime.saveable.Saver
+import androidx.compose.runtime.saveable.rememberSaveable
+//import com.stevdzasan.onetap.OneTapSignInState
 
 import com.example.gallerychicago.Data.GoogleUser
 import com.example.gallerychicago.Data.getUserFromTokenId
+import com.example.gallerychicago.googleLogin.OneTapSignInState
+//import com.stevdzasan.onetap.OneTapSignInStateSaver
+//import com.stevdzasan.onetap.openGoogleAccountSettings
 
 // from oneTop project
-import com.stevdzasan.onetap.OneTapSignInWithGoogle
+//import com.stevdzasan.onetap.OneTapSignInWithGoogle
 //import com.stevdzasan.onetap.getUserFromTokenId
 //import com.stevdzasan.onetap.handleCredentialsNotAvailable
 //import com.stevdzasan.onetap.handleSignIn
-import com.stevdzasan.onetap.rememberOneTapSignInState
+//import com.stevdzasan.onetap.rememberOneTapSignInState
 
 
 @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
@@ -208,13 +216,15 @@ fun LoginScreen(
             // Button to choose to login in with google account
             Spacer(modifier = Modifier.height(15.dp))
 
-            // Google One-Tap Login State
+            /**
+             *  Google One-Tap Login State
+             */
             val state = rememberOneTapSignInState()
             var user: GoogleUser? by remember { mutableStateOf(null) }
             OneTapSignInWithGoogle(
                 state = state,
-                rememberAccount = true,
-                clientId = "513800573110-dbileqgqt86u0rkdvptsfe6ravq1eapf.apps.googleusercontent.com",  // Google Cloud Platform Client ID
+                rememberAccount = false,
+                clientId = "508519310831-5jou70a9oo3sgt4adi1e965e2u6692ph.apps.googleusercontent.com",  // Google Cloud Platform Client ID
                 onTokenIdReceived = { tokenId ->
                     user = getUserFromTokenId(tokenId)
                     println(user)
@@ -241,157 +251,226 @@ fun LoginScreen(
                 colors = ButtonDefaults.buttonColors(Color(0xFF952323)),
             ) {
                 Text("Login in with Google")
-            }
-             */
+            }*/
 
         }
     }
 }
 
-////
-//@Composable
-//fun OneTapSignInWithGoogle(
-//    state: OneTapSignInState,
-//    clientId: String,
-//    rememberAccount: Boolean = true,
-//    nonce: String? = null,
-//    onTokenIdReceived: (String) -> Unit,
-//    onDialogDismissed: (String) -> Unit,
-//) {
-//    val scope = rememberCoroutineScope()
-//    val context = LocalContext.current
-//    val credentialManager = remember { CredentialManager.create(context) }
+@Composable
+fun rememberOneTapSignInState(): OneTapSignInState {
+    return rememberSaveable(
+        saver = OneTapSignInStateSaver
+    ) { OneTapSignInState() }
+}
+
+private val OneTapSignInStateSaver: Saver<OneTapSignInState, Boolean> = Saver(
+    save = { state -> state.opened },
+    restore = { opened -> OneTapSignInState(open = opened) },
+)
+
 //
-//    val googleIdOption = remember {
-//        GetGoogleIdOption.Builder()
-//            .setServerClientId(clientId)
-//            .setNonce(nonce)
-//            .setFilterByAuthorizedAccounts(rememberAccount)
-//            .build()
-//    }
-//
-//    val request = remember {
-//        GetCredentialRequest.Builder()
-//            .setCredentialOptions(listOf(googleIdOption))
-//            .build()
-//    }
-//
-//    LaunchedEffect(key1 = state.opened) {
-//        if (state.opened) {
-//            scope.launch {
-//                try {
-//                    val response = credentialManager.getCredential(
-//                        request = request,
-//                        context = context,
-//                    )
-//                    handleSignIn(
-//                        credentialResponse = response,
-//                        onTokenIdReceived = {
-//                            onTokenIdReceived(it)
-//                            state.close()
-//                        },
-//                        onDialogDismissed = {
-//                            Log.e(com.stevdzasan.onetap.TAG, it)
-//                            onDialogDismissed(it)
-//                            state.close()
-//                        }
-//                    )
-//                } catch (e: androidx.credentials.exceptions.GetCredentialException) {
-//                    if (e.message != null) {
-//                        if (e.message!!.contains("No credentials available")) {
-//                            handleCredentialsNotAvailable(
-//                                context = context,
-//                                state = state,
-//                                credentialManager = credentialManager,
-//                                clientId = clientId,
-//                                nonce = nonce,
-//                                onTokenIdReceived = onTokenIdReceived,
-//                                onDialogDismissed = onDialogDismissed
-//                            )
-//                        }
-//                    } else {
-//                        try {
-//                            val errorMessage = if (e.message != null) {
-//                                if (e.message!!.contains("activity is cancelled by the user.")) {
-//                                    "Dialog Closed."
-//                                } else if (e.message!!.contains("Caller has been temporarily blocked")) {
-//                                    "Sign in has been Temporarily Blocked due to too many Closed Prompts."
-//                                } else {
-//                                    e.message.toString()
-//                                }
-//                            } else "Unknown Error."
-//                            Log.e(com.stevdzasan.onetap.TAG, errorMessage)
-//                            onDialogDismissed(errorMessage)
-//                            state.close()
-//                        } catch (e: Exception) {
-//                            Log.e(com.stevdzasan.onetap.TAG, "${e.message}")
-//                            onDialogDismissed("${e.message}")
-//                            state.close()
-//                        }
-//                    }
-//                } catch (e: Exception) {
-//                    if (e.message != null) {
-//                        if (e.message!!.contains("No credentials available")) {
-//                            handleCredentialsNotAvailable(
-//                                context = context,
-//                                state = state,
-//                                credentialManager = credentialManager,
-//                                clientId = clientId,
-//                                nonce = nonce,
-//                                onTokenIdReceived = onTokenIdReceived,
-//                                onDialogDismissed = onDialogDismissed
-//                            )
-//                        }
-//                    } else {
-//                        Log.e(com.stevdzasan.onetap.TAG, "${e.message}")
-//                        onDialogDismissed("${e.message}")
-//                        state.close()
-//                    }
-//                }
-//            }
-//        }
-//    }
-//}
-//
-//@Stable
-//class OneTapSignInState(open: Boolean = false) {
-//    var opened by mutableStateOf(open)
-//        private set
-//
-//    fun open() {
-//        opened = true
-//    }
-//
-//    internal fun close() {
-//        opened = false
-//    }
-//}
-//private fun handleSignIn(
-//    credentialResponse: GetCredentialResponse,
-//    onTokenIdReceived: (String) -> Unit,
-//    onDialogDismissed: (String) -> Unit,
-//) {
-//    when (val credential = credentialResponse.credential) {
-//        is CustomCredential -> {
-//            if (credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
-//                try {
-//                    val googleIdTokenCredential = GoogleIdTokenCredential
-//                        .createFrom(credential.data)
-//                    onTokenIdReceived(googleIdTokenCredential.idToken)
-//                } catch (e: GoogleIdTokenParsingException) {
-//                    onDialogDismissed("Invalid Google tokenId response: ${e.message}")
-//                }
-//            } else {
-//                onDialogDismissed("Unexpected Type of Credential.")
-//            }
-//        }
-//
-//        else -> {
-//            onDialogDismissed("Unexpected Type of Credential.")
-//        }
-//    }
-//}
-//
+@Composable
+fun OneTapSignInWithGoogle(
+    state: OneTapSignInState,
+    clientId: String,
+    rememberAccount: Boolean = true,
+    nonce: String? = null,
+    onTokenIdReceived: (String) -> Unit,
+    onDialogDismissed: (String) -> Unit,
+) {
+    val scope = rememberCoroutineScope()
+    val context = LocalContext.current
+    val credentialManager = remember { CredentialManager.create(context) }
+
+    val googleIdOption = remember {
+        GetGoogleIdOption.Builder()
+            .setServerClientId(clientId)
+            .setNonce(nonce)
+            .setFilterByAuthorizedAccounts(rememberAccount)
+            .build()
+    }
+
+    val request = remember {
+        GetCredentialRequest.Builder()
+            .setCredentialOptions(listOf(googleIdOption))
+            .build()
+    }
+
+    LaunchedEffect(key1 = state.opened) {
+        if (state.opened) {
+            scope.launch {
+                try {
+                    val response = credentialManager.getCredential(
+                        request = request,
+                        context = context,
+                    )
+                    handleSignIn(
+                        credentialResponse = response,
+                        onTokenIdReceived = {
+                            onTokenIdReceived(it)
+                            state.close()
+                        },
+                        onDialogDismissed = {
+                            onDialogDismissed(it)
+                            state.close()
+                        }
+                    )
+                } catch (e: androidx.credentials.exceptions.GetCredentialException) {
+                    if (e.message != null) {
+                        if (e.message!!.contains("No credentials available")) {
+                            handleCredentialsNotAvailable(
+                                context = context,
+                                state = state,
+                                credentialManager = credentialManager,
+                                clientId = clientId,
+                                nonce = nonce,
+                                onTokenIdReceived = onTokenIdReceived,
+                                onDialogDismissed = onDialogDismissed
+                            )
+                        }
+                    } else {
+                        try {
+                            val errorMessage = if (e.message != null) {
+                                if (e.message!!.contains("activity is cancelled by the user.")) {
+                                    "Dialog Closed."
+                                } else if (e.message!!.contains("Caller has been temporarily blocked")) {
+                                    "Sign in has been Temporarily Blocked due to too many Closed Prompts."
+                                } else {
+                                    e.message.toString()
+                                }
+                            } else "Unknown Error."
+                            onDialogDismissed(errorMessage)
+                            state.close()
+                        } catch (e: Exception) {
+                            onDialogDismissed("${e.message}")
+                            state.close()
+                        }
+                    }
+                } catch (e: Exception) {
+                    if (e.message != null) {
+                        if (e.message!!.contains("No credentials available")) {
+                            handleCredentialsNotAvailable(
+                                context = context,
+                                state = state,
+                                credentialManager = credentialManager,
+                                clientId = clientId,
+                                nonce = nonce,
+                                onTokenIdReceived = onTokenIdReceived,
+                                onDialogDismissed = onDialogDismissed
+                            )
+                        }
+                    } else {
+                        onDialogDismissed("${e.message}")
+                        state.close()
+                    }
+                }
+            }
+        }
+    }
+}
+
+private suspend fun handleCredentialsNotAvailable(
+    context: Context,
+    state: OneTapSignInState,
+    credentialManager: CredentialManager,
+    clientId: String,
+    nonce: String?,
+    onTokenIdReceived: (String) -> Unit,
+    onDialogDismissed: (String) -> Unit
+) {
+    val googleIdOption = GetGoogleIdOption.Builder()
+        .setServerClientId(clientId)
+        .setNonce(nonce)
+        .setFilterByAuthorizedAccounts(false)
+        .build()
+
+    val request = GetCredentialRequest.Builder()
+        .setCredentialOptions(listOf(googleIdOption))
+        .build()
+
+    try {
+        val response = credentialManager.getCredential(
+            request = request,
+            context = context,
+        )
+        handleSignIn(
+            credentialResponse = response,
+            onTokenIdReceived = {
+                onTokenIdReceived(it)
+                state.close()
+            },
+            onDialogDismissed = {
+                onDialogDismissed(it)
+                state.close()
+            }
+        )
+    } catch (e: androidx.credentials.exceptions.GetCredentialException) {
+        try {
+            if (e.message!!.contains("No credentials available")) {
+                openGoogleAccountSettings(context = context)
+            }
+            val errorMessage = if (e.message != null) {
+                if (e.message!!.contains("activity is cancelled by the user.")) {
+                    "Dialog Closed."
+                } else if (e.message!!.contains("Caller has been temporarily blocked")) {
+                    "Sign in has been Temporarily Blocked due to too many Closed Prompts."
+                } else {
+                    e.message.toString()
+                }
+            } else "Unknown Error."
+
+            onDialogDismissed(errorMessage)
+            state.close()
+        } catch (e: Exception) {
+
+            onDialogDismissed("${e.message}")
+            state.close()
+        }
+    } catch (e: Exception) {
+
+        onDialogDismissed("${e.message}")
+        state.close()
+    }
+}
+
+
+
+fun openGoogleAccountSettings(context: Context) {
+    try {
+        val addAccountIntent = Intent(Settings.ACTION_ADD_ACCOUNT).apply {
+            putExtra(Settings.EXTRA_ACCOUNT_TYPES, arrayOf("com.google"))
+        }
+        context.startActivity(addAccountIntent)
+    } catch (e: Exception) {
+    }
+}
+private fun handleSignIn(
+    credentialResponse: GetCredentialResponse,
+    onTokenIdReceived: (String) -> Unit,
+    onDialogDismissed: (String) -> Unit,
+) {
+    when (val credential = credentialResponse.credential) {
+        is CustomCredential -> {
+            if (credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
+                try {
+                    val googleIdTokenCredential = GoogleIdTokenCredential
+                        .createFrom(credential.data)
+                    onTokenIdReceived(googleIdTokenCredential.idToken)
+                } catch (e: GoogleIdTokenParsingException) {
+                    onDialogDismissed("Invalid Google tokenId response: ${e.message}")
+                }
+            } else {
+                onDialogDismissed("Unexpected Type of Credential.")
+            }
+        }
+
+        else -> {
+            onDialogDismissed("Unexpected Type of Credential.")
+        }
+    }
+}
+
 
 
 
