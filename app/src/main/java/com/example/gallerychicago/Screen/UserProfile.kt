@@ -284,8 +284,9 @@ fun UserProfile(navController: NavHostController, userViewModel: UserViewModel =
         Button(onClick = {
             // This clears the back stack up to the 'loginScreen'
             navController.navigate("loginScreen")
-        },
-            modifier = Modifier.width(200.dp)) {
+
+        }) {
+
             Text("Log in")
         }
 

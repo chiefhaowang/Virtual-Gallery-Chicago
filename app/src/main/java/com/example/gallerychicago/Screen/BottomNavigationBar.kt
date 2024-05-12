@@ -24,7 +24,6 @@ import com.example.gallerychicago.Data.ArtworkViewModel
 import com.example.gallerychicago.Data.UserViewModel
 
 
-@RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
 fun BottomNavigationBar(viewModel: ArtworkViewModel, userViewModel: UserViewModel) {
     val navController = rememberNavController()
